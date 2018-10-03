@@ -2,14 +2,19 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -17,7 +22,7 @@ import java.util.ResourceBundle;
 public class Controller {
 
     @FXML
-     Label textBeltStoppedPercentage;
+    Label textBeltStoppedPercentage;
     @FXML
     ListView finishedTasksListView;
     @FXML
@@ -43,7 +48,7 @@ public class Controller {
     @FXML
     Text textField;
     private Simulation simulation;
-     GUIAgent guiAgent;
+    GUIAgent guiAgent;
 
     void setGUIAgent(GUIAgent guiagent) {
         this.guiAgent = guiagent;
@@ -71,15 +76,16 @@ public class Controller {
         //  textField.setText(actionEvent.getSource().toString());
         //  simulation.addNewAgentToList();
         //   System.out.println("container: " + jade.core.AgentContainer.MAIN_CONTAINER_NAME);
-        simulation.createAgent();
+       // simulation.createAgent();
+        showAgentWindow();
     }
 
     @FXML
     void startSimulationButtonHandler(ActionEvent actionEvent) {
         //    textField.setText(actionEvent.getSource().toString());
         simulation.timeline.play();
-        simulation.isRunning=true;
-        if(guiAgent!=null){
+        simulation.isRunning = true;
+        if (guiAgent != null) {
             guiAgent.sendMessageUI(true);
 
         }
@@ -93,7 +99,7 @@ public class Controller {
         //  textField.setText(actionEvent.getSource().toString());
         simulation.timeline.stop();
         simulation.isRunning = false;
-        if(guiAgent!=null){
+        if (guiAgent != null) {
             guiAgent.sendMessageUI(false);
 
         }
@@ -106,11 +112,29 @@ public class Controller {
         textSimTime.setText(time + " s");
         textBeltStoppedTime.setText(simulation.beltStopedTime + " s");
         textFinishedTasks.setText(Integer.toString(finishedTasks));
-textBeltStoppedPercentage.setText(String.format("%.2f", simulation.beltStopedFactor)+ " %");
+        textBeltStoppedPercentage.setText(String.format("%.2f", simulation.beltStopedFactor) + " %");
     }
 
     // @Override
     //public void initialize(URL location, ResourceBundle resources) {
     // }
+    void showAgentWindow() {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AgentConfig.fxml"));
+        Stage stage = new Stage();
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setTitle("Agent Configuration");
+        stage.setScene(new Scene(root, 600, 400));
+        stage.show();
+        AgentConfigController controller = loader.getController();
+        controller.setSimulation(simulation);
+        //st
+    }
+
 
 }

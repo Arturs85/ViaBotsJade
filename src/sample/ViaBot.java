@@ -41,9 +41,11 @@ public boolean simulationRunning = false;
         this.taskList = (ObservableList) args[1];
         this.agentsList = (ObservableList) args[2];
         this.finishedTasksList = (ObservableList) args[3];
-
+if(((String)args[4]).contains("S1"))
         mAddBehaviour(new S1Bhvr(this, 1000));
+if(((String)args[4]).contains("S2"))
         mAddBehaviour(new S2Bhvr(this, 2000));
+if(((String)args[4]).contains("S3"))
         mAddBehaviour(new S3Bhvr(this, 3000));
 
 

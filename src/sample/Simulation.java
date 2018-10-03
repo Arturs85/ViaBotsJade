@@ -33,7 +33,7 @@ public class Simulation {
     LinkedList<Task> queue = new LinkedList();
 
     ObservableList<Task> finishedTasks = FXCollections.observableList(queue);
-
+   static ObservableList<String> roleList =FXCollections.observableArrayList("S1", "S2","S3", "S4");
     static int agentNumber = 0;
     Timeline timeline;
     int simTime = 0;
@@ -105,12 +105,12 @@ public class Simulation {
         return cc;
     }
 
-    void createAgent() {
+    void createAgent(String initialBehaviour) {
         if (cc != null) {
             // Create a new agent, a DummyAgent
 // and pass it a reference to an Object
             Object reference = new Object();
-            Object args[] = new Object[]{reference, tasks, agents, finishedTasks};
+            Object args[] = new Object[]{reference, tasks, agents, finishedTasks,initialBehaviour};
 
             try {
                 AgentController dummy = cc.createNewAgent("viaBot_" + getAgentNumber(),
@@ -125,6 +125,7 @@ public class Simulation {
         }
     controller.guiAgent.sendMessageUI(isRunning);
     }
+
     void createGUIAgent() {
         if (cc != null) {
             // Create a new agent, a DummyAgent

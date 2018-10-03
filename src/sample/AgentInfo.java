@@ -79,9 +79,6 @@ public class AgentInfo {
     @Override
     public String toString() {
         //    return super.toString();
-        int prog = 0;
-        if (currentTask != null)
-            prog = currentTask.progress;
         String behString = "";
         if (behaviours != null) {
             for (Behaviour b : behaviours) {
@@ -92,7 +89,8 @@ public class AgentInfo {
             }
         }
 
-
+else
+    behString+=" bhLst0";
         return behString;
     }
 }
