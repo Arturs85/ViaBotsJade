@@ -47,6 +47,7 @@ public class S1Bhvr extends BaseBhvr {
         ACLMessage msg = myAgent.receive(tpl);
         if (msg != null) {
             String s = msg.getContent();
+/*
             if (s.equalsIgnoreCase("a")) {
                 owner.assignTaskType(TaskType.A);
             }
@@ -56,6 +57,11 @@ public class S1Bhvr extends BaseBhvr {
             if (s.equalsIgnoreCase("c")) {
                 owner.assignTaskType(TaskType.C);
             }
+*/
+        //temporary
+            if(!owner.isWorking)
+            owner.assignTaskType(Task.getRandomTask());
+
         }
 
         if (owner != null) {
@@ -111,6 +117,9 @@ info.setSpeedA(owner.speed[0]);
                 owner.speed[0] = info.getSpeedA();
                 owner.speed[1] = info.getSpeedB();
                 owner.speed[2] = info.getSpeedC();
+                owner.speed[3] = info.getSpeedS2();
+                owner.speed[4] = info.getSpeedS3();
+                owner.speed[5] = info.getSpeedS4();
 
 //info.setFinishedTasksA(owner.finishedTasksCount[0]);
 //owner.getLocalName()

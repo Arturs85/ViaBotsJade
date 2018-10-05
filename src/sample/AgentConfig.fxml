@@ -17,13 +17,17 @@
     <children>
         <HBox layoutX="78.0" layoutY="92.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="600.0" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
             <children>
-                <ChoiceBox fx:id="agentBehaviourChoiseBox" prefWidth="150.0" />
-            <GridPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefWidth="250.0" scaleShape="false" HBox.hgrow="NEVER">
+                <ChoiceBox fx:id="agentBehaviourChoiseBox" prefWidth="100.0" />
+            <GridPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefWidth="400.0" scaleShape="false" HBox.hgrow="NEVER">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="97.0" minWidth="10.0" prefWidth="75.0" />
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="30" />
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="10.0" prefWidth="30" />
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="243.0" minWidth="10.0" prefWidth="30" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="50" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="10.0" prefWidth="50" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="243.0" minWidth="10.0" prefWidth="50" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="243.0" minWidth="10.0" prefWidth="50" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="243.0" minWidth="10.0" prefWidth="50" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="243.0" minWidth="10.0" prefWidth="50" />
+
 
                 </columnConstraints>
                 <rowConstraints>
@@ -34,36 +38,23 @@
 
                 </rowConstraints>
                 <children>
-                    <TextField fx:id="textSpeedA" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                        <font>
-                            <Font size="9.0" />
-                        </font></TextField>
-                    <TextField fx:id="textSpeedB" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                        <font>
-                            <Font size="9.0" />
-                        </font></TextField>
-                    <TextField fx:id="textSpeedC" GridPane.columnIndex="3" GridPane.rowIndex="2">
-                        <font>
-                            <Font size="9.0" />
-                        </font></TextField>
-                    <Label text="Task" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <TextField fx:id="textSpeedA" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    <TextField fx:id="textSpeedB" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                    <TextField fx:id="textSpeedC" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+                    <TextField fx:id="textSpeedS2" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+                    <TextField fx:id="textSpeedS3" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
+                    <TextField fx:id="textSpeedS4" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
+
+                    <Label text="Part" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <GridPane.margin>
                             <Insets />
                         </GridPane.margin></Label>
-                    <TextField fx:id="textPwrA" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                        <font>
-                            <Font size="9.0" />
-                        </font></TextField>
-                    <TextField fx:id="textPwrB" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                        <font>
-                            <Font size="9.0" />
-                        </font></TextField>
-                    <TextField fx:id="textPwrC" GridPane.columnIndex="3" GridPane.rowIndex="3">
-                        <font>
-                            <Font size="9.0" />
-                        </font></TextField>
-
-
+                    <TextField fx:id="textPwrA" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <TextField fx:id="textPwrB" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                    <TextField fx:id="textPwrC" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+                    <TextField fx:id="textPwrS2" GridPane.columnIndex="4" GridPane.rowIndex="3"/>
+                    <TextField fx:id="textPwrS3" GridPane.columnIndex="5" GridPane.rowIndex="3"/>
+                    <TextField fx:id="textPwrS4" GridPane.columnIndex="6" GridPane.rowIndex="3"/>
 
                     <Label prefHeight="17.0" text="Finished" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                     <Label text="Speed" GridPane.columnIndex="0" GridPane.rowIndex="2" />
@@ -72,6 +63,10 @@
                     <Label text="A" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                     <Label text="B" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                     <Label text="C" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+                    <Label text="S2" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+                    <Label text="S3" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+                    <Label text="S4" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+
 
                     <Label fx:id="textFinishedA" text="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                     <Label fx:id="textFinishedB" text="0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />

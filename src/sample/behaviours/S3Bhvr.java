@@ -72,7 +72,7 @@ calcPrefDist();
 
         msg.addReceiver(s1Topic);
         if(owner.taskList.get(owner.taskList.size()-1).taskType.ordinal()==0)
-                 msg.setContent("a");
+            msg.setContent("a");
         if(owner.taskList.get(owner.taskList.size()-1).taskType.ordinal()==1)
             msg.setContent("b");
         if(owner.taskList.get(owner.taskList.size()-1).taskType.ordinal()==2)

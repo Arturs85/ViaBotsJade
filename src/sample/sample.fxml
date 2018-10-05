@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <VBox prefHeight="432.0" prefWidth="1100" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
@@ -18,9 +19,18 @@
          <children>
              <ButtonBar prefHeight="40.0" prefWidth="200.0">
               <buttons>
-                <Button id="newAgentButtonCss" fx:id="newAgentButton" mnemonicParsing="false" onAction="#newAgentButtonHandler" text="New Agent" />
-                  <Button id="newAgentButtonCss" fx:id="startSimulationButton" mnemonicParsing="false" onAction="#startSimulationButtonHandler" text="Start" />
-                  <Button id="newAgentButtonCss" fx:id="stopSimulationButton" mnemonicParsing="false" onAction="#StopSimulationbuttonHandler" text="Stop" />
+                <Button id="newAgentButtonCss" fx:id="newAgentButton" graphicTextGap="2.0" mnemonicParsing="false" onAction="#newAgentButtonHandler" text="New Agent">
+                     <font>
+                        <Font size="12.0" />
+                     </font></Button>
+                  <Button id="newAgentButtonCss" fx:id="startSimulationButton" mnemonicParsing="false" onAction="#startSimulationButtonHandler" text="Start">
+                     <font>
+                        <Font size="12.0" />
+                     </font></Button>
+                  <Button id="newAgentButtonCss" fx:id="stopSimulationButton" mnemonicParsing="false" onAction="#StopSimulationbuttonHandler" text="Stop">
+                     <font>
+                        <Font size="12.0" />
+                     </font></Button>
 
               </buttons>
             </ButtonBar>
@@ -36,19 +46,19 @@
          <children>
              <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" prefHeight="200.0" prefWidth="300.0">
                  <items>
-                     <Label prefHeight="25.0" text="New Tasks" textAlignment="CENTER" />
+                     <Label prefHeight="25.0" text="New Parts" textAlignment="CENTER" />
                      <ListView fx:id="newTasksListView" prefHeight="295.0" prefWidth="200.0" />
                  </items>
              </SplitPane>
             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" prefHeight="200.0" prefWidth="500.0">
               <items>
-                  <Label prefHeight="25.0" text="Working Agents" textAlignment="CENTER" />
-                   <ListView fx:id="workingAgentsListView" prefHeight="295.0" prefWidth="400.0" />
+                  <Label prefHeight="25.0" text="Agents" textAlignment="CENTER" />
+                   <ListView fx:id="workingAgentsListView" prefHeight="311.0" prefWidth="464.0" />
               </items>
             </SplitPane>
              <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" prefHeight="200.0" prefWidth="300.0">
                  <items>
-                     <Label prefHeight="25.0" text="Finished Tasks" textAlignment="CENTER" />
+                     <Label prefHeight="25.0" text="Finished Parts" textAlignment="CENTER" />
                      <ListView fx:id="finishedTasksListView" prefHeight="295.0" prefWidth="200.0" />
                  </items>
              </SplitPane>
@@ -72,7 +82,7 @@
                <children>
                   <Label text="SimTime" />
                   <Label fx:id="textSimTime" prefHeight="17.0" prefWidth="45.0" text="--s" GridPane.columnIndex="1" />
-                  <Label text="Finished Tasks" GridPane.rowIndex="1" />
+                  <Label text="Finished Parts" GridPane.rowIndex="1" />
                   <Label fx:id="textFinishedTasks" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                    <Label text="Belt stopped time" GridPane.rowIndex="2" />
                    <Label fx:id="textBeltStoppedTime" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />

@@ -9,6 +9,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
@@ -35,6 +36,11 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
     public TextField textSpeedB;
     @FXML
     public TextField textSpeedC;
+    @FXML
+    public Label textCurTaskIdString;
+    @FXML
+    public VBox vBoxCurrTask;
+
 
 
     FXMLLoader mLLoader;
@@ -42,7 +48,7 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
 
     @Override
     protected void updateItem(AgentInfo item, boolean empty) {
-       // super.updateItem(item, empty);
+        // super.updateItem(item, empty);
         if (getItem() != null) { // get old item
             //remove all bidirectional bindings and listeners
             textSpeedA.textProperty().unbindBidirectional(getItem().speedAProperty());
@@ -54,7 +60,7 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
         super.updateItem(item, empty);
 
         if (empty || item == null) {
-             setText(null);
+            setText(null);
             setGraphic(null);
 
         } else {
@@ -74,12 +80,23 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
             textFinishedB.setText(String.valueOf(item.finishedTasksCount[1]));
             textFinishedC.setText(String.valueOf(item.finishedTasksCount[2]));
 
-            textSpeedA.textProperty().bindBidirectional(item.speedAProperty(), speedConverter );//.bindBidirectional(item.finishedTasksA.asString());
+            textSpeedA.textProperty().bindBidirectional(item.speedAProperty(), speedConverter);//.bindBidirectional(item.finishedTasksA.asString());
             textSpeedB.textProperty().bindBidirectional(item.speedBProperty(), speedConverter);
             textSpeedC.textProperty().bindBidirectional(item.speedCProperty(), speedConverter);
 
             agentName.setText(item.getShortName());
             agentRoles.setText(item.toString());
+            if (item.isS1) {
+                vBoxCurrTask.setVisible(true);
+
+                if (item.getCurrentTaskId() != null)
+                    textCurTaskIdString.setText("Part: " + item.getCurrentTaskId());
+                else
+                    textCurTaskIdString.setText("Part: ");
+            }
+                else
+                vBoxCurrTask.setVisible(false);
+                //textCurTaskIdString.setText("");
             double p = 0;
             if (item.currentTask != null) {
                 p = item.currentTask.progress / 100d;
@@ -92,7 +109,8 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
         }
 
     }
-StringConverter speedConverter= new StringConverter<Number>() {
+
+    StringConverter speedConverter = new StringConverter<Number>() {
         @Override
         public String toString(Number object) {
             return object.toString();
@@ -100,7 +118,7 @@ StringConverter speedConverter= new StringConverter<Number>() {
 
         @Override
         public Number fromString(String string) {
-            int res=Integer.parseInt(string);
+            int res = Integer.parseInt(string);
 
             return res;
         }
@@ -108,7 +126,7 @@ StringConverter speedConverter= new StringConverter<Number>() {
 
     public void updateSpeedA(ActionEvent actionEvent) {
         System.out.println(actionEvent.getSource());
-        System.out.println(((TextField)actionEvent.getSource()).getText());
+        System.out.println(((TextField) actionEvent.getSource()).getText());
         System.out.println();
     }
 }

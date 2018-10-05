@@ -38,8 +38,8 @@ public class Simulation {
     Timeline timeline;
     int simTime = 0;
     TaskGenerator taskGenerator;
-    final int TASKS_LENGTH = 4;
-    final int FINISHED_TASKS_SIZE = 5;
+    final int TASKS_LENGTH = 8;
+    final int FINISHED_TASKS_SIZE = 20;
     int beltStopedTime = 0;
     double beltStopedFactor  =0;
     boolean isRunning = false;
@@ -105,7 +105,7 @@ public class Simulation {
         return cc;
     }
 
-    void createAgent(String initialBehaviour) {
+    void createAgent(String initialBehaviour,int[] speed) {
         if (cc != null) {
             // Create a new agent, a DummyAgent
 // and pass it a reference to an Object
@@ -113,12 +113,12 @@ public class Simulation {
             Object args[] = new Object[]{reference, tasks, agents, finishedTasks,initialBehaviour};
 
             try {
-                AgentController dummy = cc.createNewAgent("viaBot_" + getAgentNumber(),
+                AgentController dummy = cc.createNewAgent("ViaBot " + getAgentNumber(),
                         "sample.ViaBot", args);
 // Fire up the agent
                 dummy.start();
 
-                agents.add(new AgentInfo(dummy.getName(), simTime, dummy,new int[]{10,20,3}));
+                agents.add(new AgentInfo(dummy.getName(), simTime, dummy,speed));//[]a,b,c,s2,s3,s4
             } catch (Exception e) {
 
             }

@@ -19,7 +19,7 @@ public class ViaBot extends Agent {
     public static int count = 1;
     public static int totalFinishedTasks = 0;
 
-    public int[] speed = {0, 0, 0};//A,B,C
+    public int[] speed = {23, 14, 19,1,1,1};//A,B,C
     public int[] finishedTasksCount = {0, 0, 0};//A,B,C
 
     int costPlaning = 10;
@@ -65,6 +65,7 @@ if(((String)args[4]).contains("S3"))
 
         addBehaviour(behaviour);
         mBehaviours.add(behaviour);
+        agentsList.get(indexOfInfoEntry()).setBehaviours(mBehaviours);
         printBehaviours();
     }
 
@@ -118,6 +119,14 @@ public boolean isS1(){
         //}
 
 
+    }
+
+   int indexOfInfoEntry() {
+       for (AgentInfo entry : agentsList) {
+           if(entry.name.contains(getName()))
+               return agentsList.indexOf(entry);
+       }
+   return -1;
     }
 
 }

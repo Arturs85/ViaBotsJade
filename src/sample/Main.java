@@ -18,7 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("Viabots sim");
+        primaryStage.setTitle("ViaBots Simulation");
         primaryStage.setScene(new Scene(root, 1100, 675));
         Controller controller = loader.getController();
         Simulation simulation = new Simulation(controller);

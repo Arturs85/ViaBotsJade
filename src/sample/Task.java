@@ -50,7 +50,7 @@ public class Task {
     @Override
     public String toString() {
         //    return super.toString();
-        return "Task " + id + "  Type: " + taskType + " created: " + timeCreated + " Progress: " + progress;
+        return "Part " + id + "  Type: " + taskType + " created: " + timeCreated + " Progress: " + progress;
     }
 
 }

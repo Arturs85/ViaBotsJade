@@ -11,20 +11,32 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox fx:id="hBox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="hBox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label id="agentName" fx:id="agentName" text="Label" />
       <VBox prefHeight="20.0" prefWidth="100.0">
          <children>
+            <Label text="Roles:" />
             <Label id="agentRoles" fx:id="agentRoles" text="Label" />
-            <ProgressBar id="agentWorkProgress" fx:id="agentWorkProgress" prefHeight="6.0" prefWidth="100.0" progress="0.0">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin></ProgressBar>
          </children>
          <padding>
             <Insets left="5.0" />
          </padding>
+         <HBox.margin>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </HBox.margin>
+      </VBox>
+      <VBox fx:id="vBoxCurrTask" prefHeight="20.0" prefWidth="100.0">
+         <children>
+            <Label fx:id="textCurTaskIdString" />
+            <ProgressBar id="agentWorkProgress" fx:id="agentWorkProgress" prefHeight="6.0" prefWidth="100.0" progress="0.0" />
+         </children>
+         <padding>
+            <Insets left="5.0" />
+         </padding>
+         <HBox.margin>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </HBox.margin>
       </VBox>
       <GridPane prefHeight="40.0" prefWidth="168.0">
         <columnConstraints>
@@ -52,7 +64,7 @@
                <font>
                   <Font size="9.0" />
                </font></TextField>
-            <Label text="Task" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Part" GridPane.columnIndex="0" GridPane.rowIndex="0">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin></Label>
@@ -69,6 +81,9 @@
          <padding>
             <Insets left="5.0" />
          </padding>
+         <HBox.margin>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </HBox.margin>
       </GridPane>
    </children>
 </HBox>
