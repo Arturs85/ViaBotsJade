@@ -65,12 +65,18 @@
 
          </children>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox prefHeight="100.0" prefWidth="600.0">
          <children>
-            <GridPane prefWidth="300.0">
+            <GridPane prefWidth="600.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="160.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="80.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="120.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="50.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="180.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="50.0" />
+
+
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -84,10 +90,30 @@
                   <Label fx:id="textSimTime" prefHeight="17.0" prefWidth="45.0" text="--s" GridPane.columnIndex="1" />
                   <Label text="Finished Parts" GridPane.rowIndex="1" />
                   <Label fx:id="textFinishedTasks" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
                    <Label text="Belt stopped time" GridPane.rowIndex="2" />
                    <Label fx:id="textBeltStoppedTime" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                    <Label text="Belt stopped percentage" GridPane.rowIndex="3" />
                    <Label fx:id="textBeltStoppedPercentage" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                   <Label text="S2.a value" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                   <Label fx:id="textS2aValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="0" GridPane.columnIndex="3"  />
+
+                   <Label text="S2.b value" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                   <Label fx:id="textS2bValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="1" GridPane.columnIndex="3"  />
+
+                   <Label text="S2.c value" GridPane.rowIndex="2" GridPane.columnIndex="2" />
+                   <Label fx:id="textS2cValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="2" GridPane.columnIndex="3"  />
+
+                   <Label text="S1.a speed Sum" GridPane.rowIndex="0" GridPane.columnIndex="4" />
+                   <Label fx:id="textS1aSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="0" GridPane.columnIndex="5"  />
+
+                   <Label text="S1.b speed Sum" GridPane.rowIndex="1" GridPane.columnIndex="4" />
+                   <Label fx:id="textS1bSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="1" GridPane.columnIndex="5"  />
+
+                   <Label text="S1.c speed Sum" GridPane.rowIndex="2" GridPane.columnIndex="4" />
+                   <Label fx:id="textS1cSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="2" GridPane.columnIndex="5"  />
+
 
                </children>
                <padding>

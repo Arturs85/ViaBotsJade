@@ -42,6 +42,7 @@ public class S1Bhvr extends BaseBhvr {
 
     @Override
     protected void onTick() {
+        super.onTick();
         receiveUImessage();
 
         ACLMessage msg = myAgent.receive(tpl);

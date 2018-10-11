@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Simulation {
-    Controller controller;
+   public Controller controller;
     ObservableList<Task> tasks = FXCollections.observableArrayList(
             new Task(0), new Task(0));
     volatile ObservableList<AgentInfo> agents = FXCollections.observableArrayList();
@@ -45,7 +45,8 @@ public class Simulation {
     boolean isRunning = false;
     ContainerController cc;
     AID[] topics = new AID[5];
-
+ public static boolean[] managingRolesFilled=new boolean[]{false,false,false,false,false};//s2.a, s2.b, s2.c,s3,s4
+public static String[] managingRoles = new String[]{"S2a","S2b","S2c","S3","S4"};
     //kārtas skaits ievietošanai jaunā aģenta vārdā
     int getAgentNumber() {
         return ++agentNumber;
@@ -110,7 +111,7 @@ public class Simulation {
             // Create a new agent, a DummyAgent
 // and pass it a reference to an Object
             Object reference = new Object();
-            Object args[] = new Object[]{reference, tasks, agents, finishedTasks,initialBehaviour};
+            Object args[] = new Object[]{reference, tasks, agents, finishedTasks,initialBehaviour,this};
 
             try {
                 AgentController dummy = cc.createNewAgent("ViaBot " + getAgentNumber(),

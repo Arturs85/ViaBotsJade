@@ -47,6 +47,7 @@ public class AgentInfo {
         this.speedA.set(speedA);
     }
 
+
     SimpleIntegerProperty speedB = new SimpleIntegerProperty(this, "speedB");
     public int getSpeedB() {
         return speedB.get();
@@ -69,6 +70,17 @@ public class AgentInfo {
         this.speedC.set(speedC);
     }
 
+    public int getSpeed(TaskType taskType){
+        switch (taskType.ordinal()){
+            case 0:
+                return getSpeedA();
+            case 1:
+                return getSpeedB();
+            case 2:
+                return getSpeedC();
+        }
+     return 0;
+    }
     SimpleIntegerProperty speedS2 = new SimpleIntegerProperty(this,"speedS2");
     public int getSpeedS2(){return speedS2.get();}
     public SimpleIntegerProperty speedS2Property() {
@@ -127,6 +139,8 @@ else
         if (behaviours != null) {
             for (Behaviour b : behaviours) {
                 String beh = (" " + b.getBehaviourName().substring(0, 2));
+                if(beh.equalsIgnoreCase(" S2"))
+                    beh+="." + b.getBehaviourName().substring(2, 3);
                 if (beh.equalsIgnoreCase(" S1"))
                     beh += "." + asignedTaskType;
                 behString += beh;

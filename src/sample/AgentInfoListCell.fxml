@@ -14,7 +14,7 @@
 <HBox fx:id="hBox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label id="agentName" fx:id="agentName" text="Label" />
-      <VBox prefHeight="20.0" prefWidth="100.0">
+      <VBox prefHeight="20.0" prefWidth="140.0">
          <children>
             <Label text="Roles:" />
             <Label id="agentRoles" fx:id="agentRoles" text="Label" />

@@ -38,12 +38,12 @@
 
                 </rowConstraints>
                 <children>
-                    <TextField fx:id="textSpeedA" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                    <TextField fx:id="textSpeedB" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                    <TextField fx:id="textSpeedC" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
-                    <TextField fx:id="textSpeedS2" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
-                    <TextField fx:id="textSpeedS3" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
-                    <TextField fx:id="textSpeedS4" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
+                    <TextField fx:id="textSpeedA" GridPane.columnIndex="1" GridPane.rowIndex="2" text="12"/>
+                    <TextField fx:id="textSpeedB" GridPane.columnIndex="2" GridPane.rowIndex="2" text="14"/>
+                    <TextField fx:id="textSpeedC" GridPane.columnIndex="3" GridPane.rowIndex="2" text="22"/>
+                    <TextField fx:id="textSpeedS2" GridPane.columnIndex="4" GridPane.rowIndex="2" text="14"/>
+                    <TextField fx:id="textSpeedS3" GridPane.columnIndex="5" GridPane.rowIndex="2" text="52"/>
+                    <TextField fx:id="textSpeedS4" GridPane.columnIndex="6" GridPane.rowIndex="2" text="72"/>
 
                     <Label text="Part" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <GridPane.margin>

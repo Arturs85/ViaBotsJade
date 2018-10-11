@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class S3Bhvr extends BaseBhvr {
 AID s1Topic;
-    ViaBot owner;
+  //  ViaBot owner;
     MessageTemplate tpl;
 
     int[] s1Distribution = new int[]{0, 0, 0};
@@ -25,7 +25,7 @@ AID s1Topic;
 
     public S3Bhvr(ViaBot owner, int ms) {
         super(owner, ms);
-        this.owner = owner;
+      //  this.owner = owner;
 initilizeTopics();//dublējas ar nākošo
 
         TopicManagementHelper topicHelper = null;
@@ -41,6 +41,8 @@ initilizeTopics();//dublējas ar nākošo
 
     @Override
     protected void onTick() {
+        super.onTick();
+
         receiveS3message();
 calcPrefDist();
    sendMessageToS1();

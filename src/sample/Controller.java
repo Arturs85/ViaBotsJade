@@ -21,6 +21,12 @@ import java.util.ResourceBundle;
 
 public class Controller {
 
+    public Label textS2aValue;
+    public Label textS2bValue;
+    public Label textS2cValue;
+    public Label textS1aSpeed;
+    public Label textS1bSpeed;
+    public Label textS1cSpeed;
     @FXML
     Label textBeltStoppedPercentage;
     @FXML
