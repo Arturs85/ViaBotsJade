@@ -16,24 +16,26 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class S3Bhvr extends BaseBhvr {
-AID s1Topic;
-  //  ViaBot owner;
+    AID s1Topic;
+    AID s2Topic;
+    //  ViaBot owner;
     MessageTemplate tpl;
-
+    MessageTemplate s3s2tpl;
     int[] s1Distribution = new int[]{0, 0, 0};
     int[] taskDistribution = new int[]{0, 0, 0};
 
     public S3Bhvr(ViaBot owner, int ms) {
         super(owner, ms);
-      //  this.owner = owner;
-initilizeTopics();//dublējas ar nākošo
+        //  this.owner = owner;
+        initilizeTopics();//dublējas ar nākošo
 
         TopicManagementHelper topicHelper = null;
         try {
             topicHelper = (TopicManagementHelper) myAgent.getHelper(TopicManagementHelper.SERVICE_NAME);
-            AID s1Topic = topicHelper.createTopic("S3");
+            s1Topic = topicHelper.createTopic("S1");
+            s2Topic = topicHelper.createTopic("S2");
             tpl = MessageTemplate.MatchTopic(s1Topic);
-
+            s3s2tpl = MessageTemplate.MatchTopic(s2Topic);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -44,49 +46,67 @@ initilizeTopics();//dublējas ar nākošo
         super.onTick();
 
         receiveS3message();
-calcPrefDist();
-   sendMessageToS1();
+        calcPrefDist();
+        sendMessageToS1();
+        sendMessageToS2();
     }
 
-    void calcPrefDist(){
-        float taskDistrPct[]=new float[taskDistribution.length];
+    void calcPrefDist() {
+        float taskDistrPct[] = new float[taskDistribution.length];
         float totalTasks = Arrays.stream(taskDistribution).sum();
         for (int i = 0; i < taskDistrPct.length; i++) {
             taskDistrPct[i] = taskDistribution[i] / totalTasks;
         }
-            // s1 aģentu kopejais skaits
-            float totalS1 = Arrays.stream(s1Distribution).sum();
+        // s1 aģentu kopejais skaits
+        float totalS1 = Arrays.stream(s1Distribution).sum();
 //velamais aģentu sadalījums
-            int s1DistrDesired[]=new int[taskDistribution.length];
-            for (int i = 0; i < taskDistrPct.length; i++) {
-                s1DistrDesired[i] = Math.round(taskDistrPct[i] * totalS1);
-            }
-
+        int s1DistrDesired[] = new int[taskDistribution.length];
+        for (int i = 0; i < taskDistrPct.length; i++) {
+            s1DistrDesired[i] = Math.round(taskDistrPct[i] * totalS1);
+        }
 
 
         System.out.println(" pref agent dist " + s1DistrDesired[0] + " " + s1DistrDesired[1] + " " + s1DistrDesired[2]);
 // sadala uzdevumus proporcionali
 
     }
-    void sendMessageToS1(){//for test
-       // int[][] data = new int[][]{s1Distribution,taskDistribution};
+
+    void sendMessageToS1() {//for test
+        // int[][] data = new int[][]{s1Distribution,taskDistribution};
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 
         msg.addReceiver(s1Topic);
-        if(owner.taskList.get(owner.taskList.size()-1).taskType.ordinal()==0)
+        if (owner.taskList.get(owner.taskList.size() - 1).taskType.ordinal() == 0)
             msg.setContent("a");
-        if(owner.taskList.get(owner.taskList.size()-1).taskType.ordinal()==1)
+        if (owner.taskList.get(owner.taskList.size() - 1).taskType.ordinal() == 1)
             msg.setContent("b");
-        if(owner.taskList.get(owner.taskList.size()-1).taskType.ordinal()==2)
+        if (owner.taskList.get(owner.taskList.size() - 1).taskType.ordinal() == 2)
             msg.setContent("c");
 
         myAgent.send(msg);
 
     }
-    void initilizeTopics(){
+
+    void sendMessageToS2() {//for test
+        // int[][] data = new int[][]{s1Distribution,taskDistribution};
+        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+
+        msg.addReceiver(s2Topic);
+        try {
+            msg.setContentObject(new int[]{10, 15, 25});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        myAgent.send(msg);
+
+    }
+
+    void initilizeTopics() {
         TopicManagementHelper topicHelper = null;
         try {
-            topicHelper = (TopicManagementHelper)myAgent.getHelper(TopicManagementHelper.SERVICE_NAME);
+            topicHelper = (TopicManagementHelper) myAgent.getHelper(TopicManagementHelper.SERVICE_NAME);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -100,21 +120,21 @@ calcPrefDist();
         if (msg != null) {
             ACLMessage msg2 = myAgent.receive(tpl);
 // apstrādā tikai pedējo ziņu
-            if(msg2==null){
-            System.out.println(" received s3 broadcast");
-            int[][] data;
-            try {
-                data = (int[][]) msg.getContentObject();
-                s1Distribution = data[0];
-                taskDistribution = data[1];
-            } catch (UnreadableException e) {
-                e.printStackTrace();
-            }
-            System.out.println("s3 : Agentinfo size: "+owner.agentsList.size());
+            if (msg2 == null) {
+                System.out.println(" received s3 broadcast");
+                int[][] data;
+                try {
+                    data = (int[][]) msg.getContentObject();
+                    s1Distribution = data[0];
+                    taskDistribution = data[1];
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("s3 : Agentinfo size: " + owner.agentsList.size());
 
-            System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
+                System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
 
-        }else receiveS3message(); //recu
+            } else receiveS3message(); //recu
         }
     }
 

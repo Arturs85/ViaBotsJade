@@ -5,6 +5,8 @@ import jade.core.ServiceException;
 import jade.core.behaviours.Behaviour;
 import jade.core.messaging.TopicManagementHelper;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import javafx.application.Platform;
 import sample.AgentInfo;
 import sample.Task;
@@ -19,12 +21,14 @@ public abstract class S2Bhvr extends BaseBhvr {
     int[] s1Distribution = new int[]{0, 0, 0};
     int[] taskDistribution = new int[]{0, 0, 0};
     AID s3Topic;
+    AID s2Topic;
     double PREDICTION_WEIGHT = 0.9;
     double LOCAL_INFO_WEIGHT = 0.1;
     int[] predictedSpeeds = new int[]{0, 0, 0};//a,b,c
     TaskType taskType;
     double problemValue;
     double availableSpeed;
+    MessageTemplate s3s2tpl;
 
     public S2Bhvr(ViaBot owner, int ms) {
         super(owner, ms);
@@ -43,7 +47,7 @@ public abstract class S2Bhvr extends BaseBhvr {
         System.out.println("s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
 
         sendMessageTests3();
-
+receiveS2message();
         availableSpeed = calculateAvailableSpeed();
         problemValue = calculateProblemValue();
 
@@ -100,6 +104,8 @@ public abstract class S2Bhvr extends BaseBhvr {
             e.printStackTrace();
         }
         s3Topic = topicHelper.createTopic("S3");
+        s2Topic = topicHelper.createTopic("S2");
+        s3s2tpl = MessageTemplate.MatchTopic(s2Topic);
 
     }
 
@@ -118,6 +124,31 @@ public abstract class S2Bhvr extends BaseBhvr {
             taskDistribution[task.taskType.ordinal()]++;
         }
     }
+
+    void receiveS2message() {
+
+        ACLMessage msg = myAgent.receive(s3s2tpl);
+        if (msg != null) {
+            ACLMessage msg2 = myAgent.receive(s3s2tpl);
+// apstrādā tikai pedējo ziņu
+            if (msg2 == null) {
+                System.out.println(" received broadcast from s3");
+                int[] data = new int[0];
+                try {
+                    data = (int[]) msg.getContentObject();
+
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println("s2."+taskType+" recieved speed data: " + data[taskType.ordinal()]);
+
+                //System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
+
+            } else receiveS2message(); //recu
+        }
+    }
+
 
 }
 
