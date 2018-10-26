@@ -15,7 +15,8 @@ public class AgentInfo {
     public boolean isS1 = false;
     public TaskType asignedTaskType = TaskType.A;
     public int[] finishedTasksCount = new int[]{0, 0, 0};
-
+public int batteryCharge =100;
+public AgentState agentState =AgentState.IDLE;
     SimpleIntegerProperty finishedTasksA = new SimpleIntegerProperty(this, "finishedTasksA");
     public int getFinishedTasksA() {
         return finishedTasksA.get();

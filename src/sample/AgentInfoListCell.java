@@ -4,10 +4,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -40,8 +37,10 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
     public Label textCurTaskIdString;
     @FXML
     public VBox vBoxCurrTask;
-
-
+@FXML
+        public ProgressIndicator progressIndBatterry;
+@FXML
+   Label labelAgentState;
 
     FXMLLoader mLLoader;
 
@@ -103,6 +102,8 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
             }
             agentWorkProgress.setProgress(p);
 
+            progressIndBatterry.setProgress(item.batteryCharge/100d);
+            labelAgentState.setText(item.agentState.toString());
             // setText(null);
             setGraphic(hBox);
 

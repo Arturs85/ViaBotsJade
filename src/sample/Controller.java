@@ -3,16 +3,19 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +30,8 @@ public class Controller {
     public Label textS1aSpeed;
     public Label textS1bSpeed;
     public Label textS1cSpeed;
+    public Label textNoOfRetoolings;
+    public Slider sliderSimSpeed;
     @FXML
     Label textBeltStoppedPercentage;
     @FXML
@@ -55,7 +60,20 @@ public class Controller {
     Text textField;
     private Simulation simulation;
     GUIAgent guiAgent;
+GraphicsContext gc;
 
+public  void initialize(){
+    sliderSimSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
+     //   System.out.println("Speed slider value changed "+ newValue);
+        simulation.timeline.setRate(newValue.intValue());//setDelay(Duration.millis(simulation.simStepDefDuration/newValue.intValue()));
+        if (guiAgent != null) {
+            guiAgent.sendMessageUI(simulation.isRunning,newValue.intValue());
+
+        }
+
+
+    });
+}
     void setGUIAgent(GUIAgent guiagent) {
         this.guiAgent = guiagent;
 
@@ -72,6 +90,7 @@ public class Controller {
             }
         });
 
+        showPlotWindow();
     }
 // ObservableList<Agent> agents = FXCollections.observableArrayList(
     //       new Agent(),new Agent());
@@ -82,7 +101,7 @@ public class Controller {
         //  textField.setText(actionEvent.getSource().toString());
         //  simulation.addNewAgentToList();
         //   System.out.println("container: " + jade.core.AgentContainer.MAIN_CONTAINER_NAME);
-       // simulation.createAgent();
+        // simulation.createAgent();
         showAgentWindow();
     }
 
@@ -92,7 +111,7 @@ public class Controller {
         simulation.timeline.play();
         simulation.isRunning = true;
         if (guiAgent != null) {
-            guiAgent.sendMessageUI(true);
+            guiAgent.sendMessageUI(true,-1);
 
         }
 
@@ -106,7 +125,7 @@ public class Controller {
         simulation.timeline.stop();
         simulation.isRunning = false;
         if (guiAgent != null) {
-            guiAgent.sendMessageUI(false);
+            guiAgent.sendMessageUI(false,-1);
 
         }
     }
@@ -119,6 +138,8 @@ public class Controller {
         textBeltStoppedTime.setText(simulation.beltStopedTime + " s");
         textFinishedTasks.setText(Integer.toString(finishedTasks));
         textBeltStoppedPercentage.setText(String.format("%.2f", simulation.beltStopedFactor) + " %");
+        textNoOfRetoolings.setText(String.valueOf(Simulation.getNoOfRetoolings()));
+drawShapes(gc);
     }
 
     // @Override
@@ -141,6 +162,43 @@ public class Controller {
         controller.setSimulation(simulation);
         //st
     }
+
+    void showPlotWindow() {
+
+        Stage stage = new Stage();
+        stage.setX(100);
+        stage.setY(100);
+
+
+        Group root = new Group();
+        Canvas canvas = new Canvas(600, 450);
+         gc = canvas.getGraphicsContext2D();
+        drawShapes(gc);
+        root.getChildren().add(canvas);
+        stage.setTitle("Plot");
+
+        stage.setScene(new Scene(root));
+        stage.show();
+
+
+    }
+
+
+     void drawShapes(GraphicsContext gc) {
+        gc.setFill(Color.GREEN);
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(2);
+        gc.strokeLine(simulation.simTime,gc.getCanvas().getHeight()-Simulation.getNoOfRetoolings(),
+                simulation.simTime,gc.getCanvas().getHeight()-Simulation.getNoOfRetoolings());
+         gc.setStroke(Color.RED);
+
+         gc.strokeLine(simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedFactor,
+                 simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedFactor);
+
+
+
+
+     }
 
 
 }

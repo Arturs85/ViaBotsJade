@@ -22,7 +22,7 @@ public class ViaBot extends Agent {
 
     public int[] speed = {23, 14, 19, 1, 1, 1};//A,B,C
     public int[] finishedTasksCount = {0, 0, 0};//A,B,C
-
+    public int[] energyCons = {2, 3, 4, 1, 1, 1};
     int costPlaning = 10;
 
     public TaskType assignedTaskType = TaskType.A;
@@ -36,9 +36,12 @@ public class ViaBot extends Agent {
     public List<Behaviour> mBehaviours = new ArrayList<>(5);
     public boolean simulationRunning = false;
     public Simulation simulation;
+    public AgentState agentState = AgentState.IDLE;
+    public Battery battery;
+
 
     protected void setup() {
-
+        battery = new Battery();
         Object[] args = getArguments();
 
         this.taskList = (ObservableList) args[1];
@@ -46,6 +49,7 @@ public class ViaBot extends Agent {
         this.finishedTasksList = (ObservableList) args[3];
         mAddBehaviour((String) args[4]);
         this.simulation = (Simulation) args[5];
+
     }
 
     public void mAddBehaviour(String behaviourString) {
@@ -93,7 +97,7 @@ public class ViaBot extends Agent {
         addBehaviour(behaviour);
         mBehaviours.add(behaviour);
         agentsList.get(indexOfInfoEntry()).setBehaviours(mBehaviours);
-        printBehaviours();
+        //  printBehaviours();
     }
 
     /**
@@ -149,26 +153,12 @@ public class ViaBot extends Agent {
     public void assignTaskType(TaskType taskType) {
 
         assignedTaskType = taskType;
-        System.out.println(getName() + " new taskType: " + taskType);
+        //     System.out.println(getName() + " new taskType: " + taskType);
+        Simulation.retoolingIncrement();
     }
 
     public void assignTask() {
-
-        //  for (int i = 0; i < taskList.size(); i++) {
-        if (taskList.size() > 0) {
-            Task task = (Task) taskList.get(taskList.size() - 1);
-
-            if (task.taskType.equals(assignedTaskType) && !task.isStarted) {
-                currentTask = task;
-                currentTask.isStarted = true;
-                isWorking = true;
-
-
-            }
-            //      break;
-        }
-        //}
-
+        simulation.assignTask(this);
 
     }
 
@@ -189,4 +179,38 @@ public class ViaBot extends Agent {
 
         }
     }
+
+    public String nameOfLeastValuedS1(TaskType taskType) {
+        int index = -1;
+        double minSpeedSoFar = Double.MAX_VALUE;
+
+        for (int i = 0; i < agentsList.size(); i++) {
+            if (agentsList.get(i).isS1 && agentsList.get(i).asignedTaskType.equals(taskType) && agentsList.get(i).getSpeed(taskType) < minSpeedSoFar)
+                index = i;
+        }
+        if (index > -1)
+            return agentsList.get(index).name;
+        else
+            return null;
+    }
+
+    public boolean dischargeBattery(TaskType taskType) {
+        return battery.discharge(energyCons[taskType.ordinal()]);
+
+    }
+
+    public boolean dischargeBattery(ExecutiveBehaviourType type) {
+        return battery.discharge(energyCons[type.ordinal()]);
+
+    }
+
+    public void setToCharge() {
+        agentState = AgentState.CHARGING;
+
+        currentTask.abandonTask();
+        currentTask = null;
+        isWorking = false;// should be removed in favor of agentState
+    }
+
+
 }

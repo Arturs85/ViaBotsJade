@@ -10,11 +10,9 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import javafx.application.Platform;
-import sample.AgentInfo;
-import sample.Task;
+import sample.*;
 import sample.Task.*;
-import sample.TaskType;
-import sample.ViaBot;
+import sample.messageObjects.TransferS1MsgObj;
 
 import java.lang.Enum;
 import java.util.Iterator;
@@ -39,12 +37,12 @@ public class S1Bhvr extends BaseBhvr {
         }
     }
 
+    int s1tickcount = 0;
 
     @Override
     protected void onTick() {
         super.onTick();
-        receiveUImessage();
-
+        //  receiveUImessage();
         ACLMessage msg = myAgent.receive(tpl);
         if (msg != null) {
             String s = msg.getContent();
@@ -59,37 +57,50 @@ public class S1Bhvr extends BaseBhvr {
                 owner.assignTaskType(TaskType.C);
             }
 */
-        //temporary
-            if(!owner.isWorking)
-            owner.assignTaskType(Task.getRandomTask());
+            //temporary
+            //if (!owner.isWorking)
+            //  owner.assignTaskType(Task.getRandomTask());
 
+        }
+        receiveTypeChangeMessage();
+
+        if (owner.agentState == AgentState.WORKING) {
+            boolean isBatOk = owner.dischargeBattery(owner.assignedTaskType);
+            if (!isBatOk) {
+                owner.setToCharge();
+            }
+        } else if (owner.agentState == AgentState.CHARGING) {
+            boolean isCharging = owner.battery.charge();
+            if (!isCharging) {
+                owner.agentState = AgentState.IDLE;
+
+            }
         }
 
         if (owner != null) {
             if (owner.simulationRunning) {
-                if (!owner.isWorking) {
+                if (!owner.isWorking && owner.agentState == AgentState.IDLE) {
                     owner.assignTask();
                 }
 
-                if (owner.currentTask != null) {
+                if (owner.currentTask != null && owner.agentState == AgentState.WORKING) {
                     owner.currentTask.progress += owner.speed[owner.currentTask.taskType.ordinal()];
-                    //pārbauda vai ir uzdevums ir pabeigts
+                    //pārbauda vai uzdevums ir pabeigts
                     if (owner.currentTask.progress >= Task.FULL_PROGRESS) {
                         owner.currentTask.progress = Task.FULL_PROGRESS;
                         owner.isWorking = false;
+
+                        owner.agentState = AgentState.IDLE;
                         owner.finishedTasksCount[owner.currentTask.taskType.ordinal()]++;
 
                         owner.totalFinishedTasks++;
-                        int finishedTaskIndex = owner.taskList.indexOf(owner.currentTask);
+
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                owner.finishedTasksList.add(owner.taskList.get(finishedTaskIndex));
-                                owner.taskList.remove(finishedTaskIndex);
+                                owner.simulation.moveToFinishedList(owner);
                             }
                         });
-
-                        owner.currentTask = null;
 
                     }
                 }
@@ -126,9 +137,34 @@ info.setSpeedA(owner.speed[0]);
 //owner.getLocalName()
                 info.isS1 = true;
                 info.asignedTaskType = owner.assignedTaskType;
+                info.batteryCharge = owner.battery.energyLeft;
+                info.agentState=owner.agentState;
             }
         }
     }
 
+
+    void receiveTypeChangeMessage() {
+        MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+
+
+        ACLMessage msg = myAgent.receive(mt);
+        if (msg != null) {
+            ACLMessage msg2 = myAgent.receive(mt);
+// apstrādā tikai pedējo ziņu
+            if (msg2 == null) {
+                //  System.out.println(" received ui broadcast");
+                boolean[] data;
+                try {
+                    TransferS1MsgObj msgInfo = (TransferS1MsgObj) msg.getContentObject();
+                    owner.assignTaskType(msgInfo.desiredType);
+                    //       System.out.println(owner.getName() + " changed task type to " + owner.assignedTaskType);
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+                //    System.out.println("s3 : Agentinfo size: "+owner.agentsList.size());
+            } else receiveTypeChangeMessage(); //recu
+        }
+    }
 
 }

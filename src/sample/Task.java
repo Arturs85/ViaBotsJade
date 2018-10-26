@@ -36,7 +36,7 @@ public class Task {
     public static final int FULL_PROGRESS = 100;
     int timeCreated;
     boolean isFinished = false;
-    boolean isStarted = false;
+    boolean isStarted = false; //  or rather inProgress
     public int progress = 0;
 
     Task(int timeStep) {
@@ -52,5 +52,11 @@ public class Task {
         //    return super.toString();
         return "Part " + id + "  Type: " + taskType + " created: " + timeCreated + " Progress: " + progress;
     }
+
+void abandonTask(){
+        isStarted = false;
+
+}
+
 
 }

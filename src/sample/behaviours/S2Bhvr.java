@@ -8,10 +8,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import javafx.application.Platform;
-import sample.AgentInfo;
-import sample.Task;
-import sample.TaskType;
-import sample.ViaBot;
+import sample.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,27 +26,39 @@ public abstract class S2Bhvr extends BaseBhvr {
     double problemValue;
     double availableSpeed;
     MessageTemplate s3s2tpl;
-
+ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
     public S2Bhvr(ViaBot owner, int ms) {
         super(owner, ms);
         //    this.owner = owner;
         initilizeTopics();
     }
 
+    int s2tickcount = 0;
+
     @Override
     protected void onTick() {
         super.onTick();
+        //System.out.println(taskType+" s2count "+s2tickcount++);
 
         // nolasa S1 sadalījumu pa uzdevumu veidiem
         updateS1Distribution();
 //nolasa pieejamo uzdevumu sadalījumu
         updateTaskDistribution();
-        System.out.println("s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
+        //    System.out.println("s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
 
         sendMessageTests3();
-receiveS2message();
+        receiveS2message();
+        owner.addBehaviour(new S2ExchangerBhvr(owner, calculateProblemValues(), taskType));
         availableSpeed = calculateAvailableSpeed();
         problemValue = calculateProblemValue();
+
+//battery discharge
+        if (owner.agentState == AgentState.WORKING) {
+            boolean isBatOk = owner.dischargeBattery(behaviourType);
+            if (!isBatOk) {
+                owner.setToCharge();
+            }
+        }
 
         Platform.runLater(new Runnable() {
             @Override
@@ -66,6 +75,18 @@ receiveS2message();
         double val = PREDICTION_WEIGHT * predictedSpeeds[taskType.ordinal()] + LOCAL_INFO_WEIGHT * taskDistribution[taskType.ordinal()];
 
         return val;
+
+    }
+
+    double[] calculateProblemValues() {
+        double[] vals = new double[TaskType.values().length];
+
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = PREDICTION_WEIGHT * predictedSpeeds[i] + LOCAL_INFO_WEIGHT * taskDistribution[i];
+
+        }
+
+        return vals;
 
     }
 
@@ -110,12 +131,7 @@ receiveS2message();
     }
 
     void updateS1Distribution() {
-        Arrays.fill(s1Distribution, 0);
-        for (AgentInfo info : owner.agentsList) {
-            if (info.isS1) {
-                s1Distribution[info.asignedTaskType.ordinal()]++;
-            }
-        }
+        owner.simulation.updateS1Distribution(s1Distribution);
     }
 
     void updateTaskDistribution() {
@@ -132,7 +148,7 @@ receiveS2message();
             ACLMessage msg2 = myAgent.receive(s3s2tpl);
 // apstrādā tikai pedējo ziņu
             if (msg2 == null) {
-                System.out.println(" received broadcast from s3");
+                //  System.out.println(" received broadcast from s3");
                 int[] data = new int[0];
                 try {
                     data = (int[]) msg.getContentObject();
@@ -141,7 +157,7 @@ receiveS2message();
                     e.printStackTrace();
                 }
 
-                System.out.println("s2."+taskType+" recieved speed data: " + data[taskType.ordinal()]);
+                // System.out.println("s2." + taskType + " recieved speed data: " + data[taskType.ordinal()]);
 
                 //System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
 

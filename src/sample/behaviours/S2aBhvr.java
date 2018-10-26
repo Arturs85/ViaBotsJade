@@ -14,6 +14,7 @@ public class S2aBhvr extends S2Bhvr {
     }
 
 
+
     @Override
     void updateUI() {
         owner.simulation.controller.textS2aValue.setText(Double.toString(problemValue));

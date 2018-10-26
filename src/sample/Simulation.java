@@ -20,36 +20,45 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Duration;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Simulation {
-   public Controller controller;
-    ObservableList<Task> tasks = FXCollections.observableArrayList(
+    public Controller controller;
+    private ObservableList<Task> tasks = FXCollections.observableArrayList(
             new Task(0), new Task(0));
     volatile ObservableList<AgentInfo> agents = FXCollections.observableArrayList();
     LinkedList<Task> queue = new LinkedList();
 
     ObservableList<Task> finishedTasks = FXCollections.observableList(queue);
-   static ObservableList<String> roleList =FXCollections.observableArrayList("S1", "S2","S3", "S4");
+    static ObservableList<String> roleList = FXCollections.observableArrayList("S1", "S2", "S3", "S4");
     static int agentNumber = 0;
+    static int noOfRetoolings = 0;
+    int simStepDefDuration=1000;
+    int simTimeFactor =1;
     Timeline timeline;
     int simTime = 0;
     TaskGenerator taskGenerator;
     final int TASKS_LENGTH = 8;
     final int FINISHED_TASKS_SIZE = 20;
     int beltStopedTime = 0;
-    double beltStopedFactor  =0;
+    double beltStopedFactor = 0;
     boolean isRunning = false;
     ContainerController cc;
     AID[] topics = new AID[5];
- public static boolean[] managingRolesFilled=new boolean[]{false,false,false,false,false};//s2.a, s2.b, s2.c,s3,s4
-public static String[] managingRoles = new String[]{"S2a","S2b","S2c","S3","S4"};
+    public static boolean[] managingRolesFilled = new boolean[]{false, false, false, false, false};//s2.a, s2.b, s2.c,s3,s4
+    public static String[] managingRoles = new String[]{"S2a", "S2b", "S2c", "S3", "S4"};
+
     //kārtas skaits ievietošanai jaunā aģenta vārdā
     int getAgentNumber() {
         return ++agentNumber;
+    }
+
+    static synchronized void retoolingIncrement() {
+        noOfRetoolings++;
+    }
+
+    static synchronized int getNoOfRetoolings() {
+        return noOfRetoolings;
     }
 
     Simulation(Controller controller) {
@@ -57,9 +66,11 @@ public static String[] managingRoles = new String[]{"S2a","S2b","S2c","S3","S4"}
         controller.workingAgentsListView.setItems(agents);
         controller.newTasksListView.setItems(tasks);
         controller.finishedTasksListView.setItems(finishedTasks);
-        timeline = new Timeline(new KeyFrame(Duration.millis(1000), ae -> simulationStep()));
+        timeline = new Timeline(new KeyFrame(Duration.millis(simStepDefDuration), ae -> simulationStep()));
         timeline.setCycleCount(Animation.INDEFINITE);
         taskGenerator = new TaskGenerator();
+
+
         // agents.add(new Agent(tasks, agents, finishedTasks));
         cc = startJade();
         registerListener();
@@ -77,10 +88,10 @@ public static String[] managingRoles = new String[]{"S2a","S2b","S2c","S3","S4"}
         } else
             beltStopedTime++;
         //lai nepārpildītos rinda- patur tikai pedējos pievienotos elementus
-        if(finishedTasks.size()>FINISHED_TASKS_SIZE){
+        if (finishedTasks.size() > FINISHED_TASKS_SIZE) {
             queue.removeFirst();
         }
-        beltStopedFactor=100d*beltStopedTime/simTime;
+        beltStopedFactor = 100d * beltStopedTime / simTime;
         // plānotājs ir pirmais aģents sarakstā
 
     }
@@ -106,12 +117,12 @@ public static String[] managingRoles = new String[]{"S2a","S2b","S2c","S3","S4"}
         return cc;
     }
 
-    void createAgent(String initialBehaviour,int[] speed) {
+    void createAgent(String initialBehaviour, int[] speed) {
         if (cc != null) {
             // Create a new agent, a DummyAgent
 // and pass it a reference to an Object
             Object reference = new Object();
-            Object args[] = new Object[]{reference, tasks, agents, finishedTasks,initialBehaviour,this};
+            Object args[] = new Object[]{reference, tasks, agents, finishedTasks, initialBehaviour, this};
 
             try {
                 AgentController dummy = cc.createNewAgent("ViaBot " + getAgentNumber(),
@@ -119,12 +130,12 @@ public static String[] managingRoles = new String[]{"S2a","S2b","S2c","S3","S4"}
 // Fire up the agent
                 dummy.start();
 
-                agents.add(new AgentInfo(dummy.getName(), simTime, dummy,speed));//[]a,b,c,s2,s3,s4
+                agents.add(new AgentInfo(dummy.getName(), simTime, dummy, speed));//[]a,b,c,s2,s3,s4
             } catch (Exception e) {
 
             }
         }
-    controller.guiAgent.sendMessageUI(isRunning);
+        controller.guiAgent.sendMessageUI(isRunning,1);
     }
 
     void createGUIAgent() {
@@ -132,7 +143,7 @@ public static String[] managingRoles = new String[]{"S2a","S2b","S2c","S3","S4"}
             // Create a new agent, a DummyAgent
 // and pass it a reference to an Object
             Object reference = new Object();
-            Object args[] = new Object[]{reference,controller};
+            Object args[] = new Object[]{reference, controller};
 
             try {
                 AgentController dummy = cc.createNewAgent("guiAgent",
@@ -162,6 +173,50 @@ public static String[] managingRoles = new String[]{"S2a","S2b","S2c","S3","S4"}
         }
 
     }
+
+    public synchronized void moveToFinishedList(ViaBot viaBot) {
+        int finishedTaskIndex = tasks.indexOf(viaBot.currentTask);
+        if (finishedTaskIndex >= 0) {
+
+
+            finishedTasks.add(tasks.get(finishedTaskIndex));
+            tasks.remove(finishedTaskIndex);
+            viaBot.currentTask = null;
+
+        } else
+            System.out.println("finished task " + viaBot.currentTask.id + " not found in task list ");
+    }
+
+    public synchronized void assignTask(ViaBot viaBot) {
+
+        //  for (int i = 0; i < taskList.size(); i++) {
+        if (tasks.size() > 0) {
+            //Task task = (Task) taskList.get(taskList.size() - 1);// pārbauda tikai vecāko uzdevumu
+
+            for (Task task : tasks) {//pārbauda visus uzdevumus sarakstā
+                // Task task = (Task) taskList.get(taskList.size() - 1);
+
+
+                if (task.taskType.equals(viaBot.assignedTaskType) && !task.isStarted) {
+                    viaBot.currentTask = task;
+                    viaBot.currentTask.isStarted = true;
+                    viaBot.isWorking = true;
+viaBot.agentState=AgentState.WORKING;
+                    break;
+                }
+            }
+        }
+    }
+
+    public synchronized void updateS1Distribution(int[] s1Distribution) {
+        Arrays.fill(s1Distribution, 0);
+        for (AgentInfo info : agents) {
+            if (info.isS1) {
+                s1Distribution[info.asignedTaskType.ordinal()]++;
+            }
+        }
+    }
+
 
     void registerListener() {
         if (cc != null) {

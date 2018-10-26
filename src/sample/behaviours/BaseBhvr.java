@@ -8,7 +8,9 @@ import jade.core.messaging.TopicManagementHelper;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import sample.AgentState;
 import sample.ViaBot;
+import sample.messageObjects.GuiAgentMessageToOther;
 
 public abstract class BaseBhvr extends TickerBehaviour {
     TopicManagementHelper topicHelper = null;
@@ -16,6 +18,8 @@ public abstract class BaseBhvr extends TickerBehaviour {
     MessageTemplate uiMsgTpl;
     boolean isRunning = false;
     ViaBot owner;
+    int defPauseMs = 1000;
+    int speedFactor = 1;
 
     public BaseBhvr(ViaBot a, long period) {
         super(a, period);
@@ -36,6 +40,8 @@ public abstract class BaseBhvr extends TickerBehaviour {
     @Override
     protected void onTick() {
         owner.addBehaviour(new ManagingRoleChekerBhvr(owner));
+    receiveUImessage();
+
     }
 
     void receiveUImessage() {
@@ -47,11 +53,16 @@ public abstract class BaseBhvr extends TickerBehaviour {
 // apstrādā tikai pedējo ziņu
             if (msg2 == null) {
                 //  System.out.println(" received ui broadcast");
-                boolean[] data;
+                GuiAgentMessageToOther data;
                 try {
-                    data = (boolean[]) msg.getContentObject();
-                    isRunning = data[0];
+                    data = (GuiAgentMessageToOther) msg.getContentObject();
+                    isRunning = data.isSimulationRunning;
                     ((ViaBot) myAgent).simulationRunning = isRunning;
+                    if (data.agentSpeedFactor >= 1) {
+                        speedFactor = data.agentSpeedFactor;
+                       reset(defPauseMs / speedFactor);
+                        System.out.println("ticker behaviour period reset to "+getPeriod());
+                    }
                 } catch (UnreadableException e) {
                     e.printStackTrace();
                 }

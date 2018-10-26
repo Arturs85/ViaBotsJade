@@ -11,11 +11,12 @@ import sample.Controller;
 import sample.behaviours.S1Bhvr;
 import sample.behaviours.S2Bhvr;
 import sample.behaviours.S3Bhvr;
+import sample.messageObjects.GuiAgentMessageToOther;
 
 import java.io.IOException;
 
 public class GUIAgent extends Agent {
-Controller controller;
+    Controller controller;
     TopicManagementHelper topicHelper = null;
     AID uiTopic; //ui ziņu temats(piem, stop/run)
     MessageTemplate uiMsgTpl;
@@ -25,7 +26,7 @@ Controller controller;
         Object[] args = getArguments();
 
         this.controller = (Controller) args[1];
-controller.setGUIAgent(this);
+        controller.setGUIAgent(this);
         try {
             topicHelper = (TopicManagementHelper) getHelper(TopicManagementHelper.SERVICE_NAME);
             uiTopic = topicHelper.createTopic("uiTopic");
@@ -41,9 +42,9 @@ controller.setGUIAgent(this);
         }
     }
 
-    void sendMessageUI(boolean isRunning){
-        System.out.println("sending ui is running: "+isRunning);
-        boolean[] data=new boolean[]{isRunning};
+    void sendMessageUI(boolean isRunning, int simSpeedFactor) {
+        System.out.println("sending ui is running: " + isRunning);
+        GuiAgentMessageToOther data = new GuiAgentMessageToOther(isRunning, simSpeedFactor);
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         try {
             msg.setContentObject(data);

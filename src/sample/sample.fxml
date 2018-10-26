@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -31,6 +32,7 @@
                      <font>
                         <Font size="12.0" />
                      </font></Button>
+                  <Slider fx:id="sliderSimSpeed" majorTickUnit="1.0" max="10.0" min="1.0" snapToTicks="true" />
 
               </buttons>
             </ButtonBar>
@@ -42,24 +44,24 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </HBox>
-      <HBox prefHeight="528.0" prefWidth="1100">
+      <HBox prefHeight="528.0" prefWidth="1200">
          <children>
-             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" prefHeight="200.0" prefWidth="300.0">
+             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" >
                  <items>
                      <Label prefHeight="25.0" text="New Parts" textAlignment="CENTER" />
-                     <ListView fx:id="newTasksListView" prefHeight="295.0" prefWidth="200.0" />
+                     <ListView fx:id="newTasksListView" prefHeight="295.0" prefWidth="300.0" />
                  </items>
              </SplitPane>
-            <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" prefHeight="200.0" prefWidth="500.0">
+            <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" >
               <items>
                   <Label prefHeight="25.0" text="Agents" textAlignment="CENTER" />
-                   <ListView fx:id="workingAgentsListView" prefHeight="311.0" prefWidth="464.0" />
+                   <ListView fx:id="workingAgentsListView" prefHeight="311.0" prefWidth="600.0" />
               </items>
             </SplitPane>
-             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" prefHeight="200.0" prefWidth="300.0">
+             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" >
                  <items>
                      <Label prefHeight="25.0" text="Finished Parts" textAlignment="CENTER" />
-                     <ListView fx:id="finishedTasksListView" prefHeight="295.0" prefWidth="200.0" />
+                     <ListView fx:id="finishedTasksListView" prefHeight="295.0" prefWidth="300.0" />
                  </items>
              </SplitPane>
 
@@ -96,23 +98,27 @@
                    <Label text="Belt stopped percentage" GridPane.rowIndex="3" />
                    <Label fx:id="textBeltStoppedPercentage" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                   <Label text="S2.a value" GridPane.rowIndex="0" GridPane.columnIndex="2" />
-                   <Label fx:id="textS2aValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="0" GridPane.columnIndex="3"  />
+                   <Label text="S2.a value" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                   <Label fx:id="textS2aValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
-                   <Label text="S2.b value" GridPane.rowIndex="1" GridPane.columnIndex="2" />
-                   <Label fx:id="textS2bValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="1" GridPane.columnIndex="3"  />
+                   <Label text="S2.b value" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                   <Label fx:id="textS2bValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
 
-                   <Label text="S2.c value" GridPane.rowIndex="2" GridPane.columnIndex="2" />
-                   <Label fx:id="textS2cValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="2" GridPane.columnIndex="3"  />
+                   <Label text="S2.c value" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                   <Label fx:id="textS2cValue" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
 
-                   <Label text="S1.a speed Sum" GridPane.rowIndex="0" GridPane.columnIndex="4" />
-                   <Label fx:id="textS1aSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="0" GridPane.columnIndex="5"  />
+                   <Label text="Retoolings" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                   <Label fx:id="textNoOfRetoolings" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
 
-                   <Label text="S1.b speed Sum" GridPane.rowIndex="1" GridPane.columnIndex="4" />
-                   <Label fx:id="textS1bSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="1" GridPane.columnIndex="5"  />
 
-                   <Label text="S1.c speed Sum" GridPane.rowIndex="2" GridPane.columnIndex="4" />
-                   <Label fx:id="textS1cSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.rowIndex="2" GridPane.columnIndex="5"  />
+                   <Label text="S1.a speed Sum" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                   <Label fx:id="textS1aSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+
+                   <Label text="S1.b speed Sum" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                   <Label fx:id="textS1bSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+
+                   <Label text="S1.c speed Sum" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                   <Label fx:id="textS1cSpeed" prefHeight="17.0" prefWidth="63.0" text="0" GridPane.columnIndex="5" GridPane.rowIndex="2" />
 
 
                </children>

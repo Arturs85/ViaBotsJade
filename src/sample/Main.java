@@ -19,7 +19,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("ViaBots Simulation");
-        primaryStage.setScene(new Scene(root, 1100, 675));
+        primaryStage.setScene(new Scene(root, 1200, 675));
         Controller controller = loader.getController();
         Simulation simulation = new Simulation(controller);
         controller.setSimulation(simulation);
