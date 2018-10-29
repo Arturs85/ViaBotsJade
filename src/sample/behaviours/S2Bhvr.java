@@ -145,9 +145,7 @@ ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
 
         ACLMessage msg = myAgent.receive(s3s2tpl);
         if (msg != null) {
-            ACLMessage msg2 = myAgent.receive(s3s2tpl);
-// apstrādā tikai pedējo ziņu
-            if (msg2 == null) {
+
                 //  System.out.println(" received broadcast from s3");
                 int[] data = new int[0];
                 try {
@@ -161,7 +159,7 @@ ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
 
                 //System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
 
-            } else receiveS2message(); //recu
+
         }
     }
 

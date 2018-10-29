@@ -38,7 +38,7 @@ public class ViaBot extends Agent {
     public Simulation simulation;
     public AgentState agentState = AgentState.IDLE;
     public Battery battery;
-
+public int speedFactor =1;
 
     protected void setup() {
         battery = new Battery();

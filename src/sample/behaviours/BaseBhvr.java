@@ -34,14 +34,17 @@ public abstract class BaseBhvr extends TickerBehaviour {
                 ServiceException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     protected void onTick() {
         owner.addBehaviour(new ManagingRoleChekerBhvr(owner));
     receiveUImessage();
-
+//adjust ticker behaviour period
+    if(getPeriod()!=defPauseMs/owner.speedFactor) {
+    reset(defPauseMs / owner.speedFactor);
+       // System.out.println("tbprt ");
+    }
     }
 
     void receiveUImessage() {
@@ -49,9 +52,7 @@ public abstract class BaseBhvr extends TickerBehaviour {
 
         ACLMessage msg = myAgent.receive(uiMsgTpl);
         if (msg != null) {
-            ACLMessage msg2 = myAgent.receive(uiMsgTpl);
-// apstrādā tikai pedējo ziņu
-            if (msg2 == null) {
+
                 //  System.out.println(" received ui broadcast");
                 GuiAgentMessageToOther data;
                 try {
@@ -60,14 +61,14 @@ public abstract class BaseBhvr extends TickerBehaviour {
                     ((ViaBot) myAgent).simulationRunning = isRunning;
                     if (data.agentSpeedFactor >= 1) {
                         speedFactor = data.agentSpeedFactor;
-                       reset(defPauseMs / speedFactor);
-                        System.out.println("ticker behaviour period reset to "+getPeriod());
+                       owner.speedFactor=data.agentSpeedFactor;
+                        reset(defPauseMs / speedFactor);
+                        //System.out.println("ticker behaviour period reset to "+getPeriod());
                     }
                 } catch (UnreadableException e) {
                     e.printStackTrace();
                 }
                 //    System.out.println("s3 : Agentinfo size: "+owner.agentsList.size());
-            } else receiveUImessage(); //recu
         }
     }
 }
