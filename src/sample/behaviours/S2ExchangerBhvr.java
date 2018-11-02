@@ -7,6 +7,7 @@ import jade.core.messaging.TopicManagementHelper;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import sample.AgentInfo;
 import sample.Task;
 import sample.TaskType;
 import sample.ViaBot;
@@ -86,7 +87,7 @@ public class S2ExchangerBhvr extends Behaviour {
 
     void proposeS1(String name, TaskType proposedTaskType) {
         //sends s1 proposal to all other s2
-      //  System.out.println("Sending proposals");
+        //  System.out.println("Sending proposals");
         ACLMessage proposal = new ACLMessage(ACLMessage.PROPOSE);
         try {
             proposal.setContentObject(new TransferS1MsgObj(name, proposedTaskType, false));
@@ -101,12 +102,12 @@ public class S2ExchangerBhvr extends Behaviour {
         ACLMessage msg = myAgent.receive(mt);
         if (msg != null) {
 // Message received. Process it
-  //          System.out.println("received confirmation");
+            //          System.out.println("received confirmation");
             try {
                 TransferS1MsgObj msgInfo = (TransferS1MsgObj) msg.getContentObject();
                 if (msgInfo.isNeeded) {
 //send particular s1 message to change task type
-  //                  System.out.println("sending order to s1 named " + name);
+                    //                  System.out.println("sending order to s1 named " + name);
                     ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
                     try {
                         request.setContentObject(new TransferS1MsgObj(name, proposedTaskType, false));
@@ -130,7 +131,7 @@ public class S2ExchangerBhvr extends Behaviour {
 
     void callForProposal(TaskType proposedTaskType) {
         //sends s1 proposal to all other s2
-      //  System.out.println("Sending proposals");
+        //  System.out.println("Sending proposals");
         ACLMessage cfp = new ACLMessage(ACLMessage.CFP);
         try {
             cfp.setContentObject(new TransferS1MsgObj(null, proposedTaskType, true));
@@ -145,28 +146,44 @@ public class S2ExchangerBhvr extends Behaviour {
         ACLMessage msg = myAgent.receive(mt);
         if (msg != null) {
 // Message received. Process it
-      //      System.out.println("received confirmation");
+            //      System.out.println("received confirmation");
 
         } else {
             block(100);
         }
 
-
     }
 
 
     void listenForCfp() {
-      //  System.out.println("Listening for cfp " + ownerTaskType);
+        //  System.out.println("Listening for cfp " + ownerTaskType);
         MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
         ACLMessage msg = myAgent.receive(mt);
 
         if (msg != null) {
-       //     System.out.println(" received cfp");
+            //     System.out.println(" received cfp");
             owner.simulation.updateS1Distribution(s1distr);
-            if (indexOfMax(s1distr).equals(ownerTaskType)) { // šeit jātaisa lai pieņem pieprasījumu tas, kuram ir s1 aģenti
-            //    System.out.println("accepting cfp, ");
+            if (indexOfMin(pValues).equals(ownerTaskType)) { // šeit jātaisa lai pieņem pieprasījumu tas, kuram ir s1 aģenti
+                //    System.out.println("accepting cfp, ");
+
+                TaskType proposedTaskType=null;
+                try {
+                     proposedTaskType = ((TransferS1MsgObj) msg.getContentObject()).desiredType;
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+
+//check, if giving away agent does not put giver in worst situation than receiver
+                int[] proposedAgentSpeeds=new int[]{0,0,0};
+               proposedAgentSpeeds=owner.simulation.speedsOfLeastValuedS1(ownerTaskType,proposedAgentSpeeds);
+                if(checkForSustainableExchange(proposedTaskType, proposedAgentSpeeds)==false)//funkcija lai iegūtu masīvu ar iespējāmā nododamā aģenta ātrumiem
+                    return;
+                System.out.println(owner.getName()+" will give agent");
+
                 String name = owner.nameOfLeastValuedS1(ownerTaskType);
-                if (name != null) {
+                if (name != null) {//??NOt always replaying to cfp??
+
+
 
                     ACLMessage replay = new ACLMessage(ACLMessage.CONFIRM);
 
@@ -174,12 +191,12 @@ public class S2ExchangerBhvr extends Behaviour {
                     owner.send(replay);
 
 
-                  //  System.out.println("sending order to s1 named " + name);
+                    //  System.out.println("sending order to s1 named " + name);
                     ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
                     try {
-                        TaskType proposedTaskType = ((TransferS1MsgObj) msg.getContentObject()).desiredType;
+                      //TaskType proposedTaskType = ((TransferS1MsgObj) msg.getContentObject()).desiredType;
                         request.setContentObject(new TransferS1MsgObj(name, proposedTaskType, false));
-                    } catch (IOException | UnreadableException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                     request.addReceiver(new AID(name));
@@ -192,17 +209,39 @@ public class S2ExchangerBhvr extends Behaviour {
 
     }
 
+    /**
+     * true, if after exchange S1 giver stays with higher pValue then receiver
+     */
+    boolean checkForSustainableExchange(TaskType askedFor, int[] agentToGiveAwaySpeeds) {
+       //if(pValues==null) System.out.println("pvalues = null");
+
+       //if(askedFor==null) System.out.println("asked type  = null");
+        if(agentToGiveAwaySpeeds==null) return false;//no agents to give // System.out.println("speeds = null");
+        System.out.println("have agents to give");
+
+
+        double giverPvalAfterExchg = pValues[ownerTaskType.ordinal()] - agentToGiveAwaySpeeds[ownerTaskType.ordinal()];
+      //  System.out.println("giver val "+giverPvalAfterExchg);
+
+        double receiverPvalAfterExchg = pValues[askedFor.ordinal()] + agentToGiveAwaySpeeds[askedFor.ordinal()];
+      //  System.out.println("rec val "+receiverPvalAfterExchg);
+        if (giverPvalAfterExchg < receiverPvalAfterExchg)
+            return true;
+        return false;
+
+    }
+
 
     void listenForProposals() {
-  //      System.out.println("Listening for proposals " + ownerTaskType);
+        //      System.out.println("Listening for proposals " + ownerTaskType);
         MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
         ACLMessage msg = myAgent.receive(mt);
 
         if (msg != null) {
-       //     System.out.println(" received proposal");
+            //     System.out.println(" received proposal");
 
             if (indexOfMax(pValues).equals(ownerTaskType)) {
-          //      System.out.println("accepting proposal");
+                //      System.out.println("accepting proposal");
                 ACLMessage replay = new ACLMessage(ACLMessage.CONFIRM);
                 try {
                     TransferS1MsgObj obj = (TransferS1MsgObj) msg.getContentObject();

@@ -25,8 +25,12 @@ public abstract class S2Bhvr extends BaseBhvr {
     TaskType taskType;
     double problemValue;
     double availableSpeed;
+    double availableSpeeds[] = new double[]{0, 0, 0};
+    double problemValues[] = new double[]{0, 0, 0};
+
     MessageTemplate s3s2tpl;
-ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
+    ExecutiveBehaviourType behaviourType = ExecutiveBehaviourType.S2;
+
     public S2Bhvr(ViaBot owner, int ms) {
         super(owner, ms);
         //    this.owner = owner;
@@ -48,8 +52,12 @@ ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
 
         sendMessageTests3();
         receiveS2message();
-        owner.addBehaviour(new S2ExchangerBhvr(owner, calculateProblemValues(), taskType));
+        availableSpeeds = calculateAvailableSpeeds(availableSpeeds);
+       calculateProblemValues();
+        owner.addBehaviour(new S2ExchangerBhvr(owner, problemValues, taskType));
+
         availableSpeed = calculateAvailableSpeed();
+
         problemValue = calculateProblemValue();
 
 //battery discharge
@@ -78,17 +86,26 @@ ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
 
     }
 
-    double[] calculateProblemValues() {
-        double[] vals = new double[TaskType.values().length];
+    void calculateProblemValues() {
 
-        for (int i = 0; i < vals.length; i++) {
-            vals[i] = PREDICTION_WEIGHT * predictedSpeeds[i] + LOCAL_INFO_WEIGHT * taskDistribution[i];
-
+        for (int i = 0; i < problemValues.length; i++) {
+            //vals[i] = PREDICTION_WEIGHT * predictedSpeeds[i] + LOCAL_INFO_WEIGHT * taskDistribution[i];
+            problemValues[i] = predictedSpeeds[i] - availableSpeeds[i];
         }
-
-        return vals;
-
     }
+
+    double[] calculateAvailableSpeeds(double[] availableSpeeds) {
+        Arrays.fill(availableSpeeds, 0);
+        for (AgentInfo ai : owner.agentsList) {
+            for (Behaviour be :
+                    ai.behaviours) {
+                if (be.getBehaviourName().contains("S1"))
+                    availableSpeeds[((ViaBot) be.getAgent()).assignedTaskType.ordinal()] += ai.getSpeed(taskType);
+            }
+        }
+        return availableSpeeds;
+    }
+
 
     double calculateAvailableSpeed() {
         double speed = 0;
@@ -104,7 +121,7 @@ ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
 
 
     void sendMessageTests3() {
-        int[][] data = new int[][]{s1Distribution, taskDistribution};
+        int[][] data = new int[][]{s1Distribution, taskDistribution,owner.simulation.incomingPartDist};
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         try {
             msg.setContentObject(data);
@@ -134,11 +151,13 @@ ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
         owner.simulation.updateS1Distribution(s1Distribution);
     }
 
+    //synchronized access to incoming tasks list
     void updateTaskDistribution() {
-        Arrays.fill(taskDistribution, 0);
-        for (Task task : owner.taskList) {
-            taskDistribution[task.taskType.ordinal()]++;
-        }
+        //  Arrays.fill(taskDistribution, 0);
+        //  for (Task task : owner.taskList) {
+        //      taskDistribution[task.taskType.ordinal()]++;
+        //  }
+        taskDistribution = owner.simulation.getCurTaskDistribution(taskDistribution);
     }
 
     void receiveS2message() {
@@ -146,23 +165,24 @@ ExecutiveBehaviourType behaviourType=ExecutiveBehaviourType.S2;
         ACLMessage msg = myAgent.receive(s3s2tpl);
         if (msg != null) {
 
-                //  System.out.println(" received broadcast from s3");
-                int[] data = new int[0];
-                try {
-                    data = (int[]) msg.getContentObject();
+            //  System.out.println(" received broadcast from s3");
+            double[] data = new double[0];
+            try {
+                data = (double[]) msg.getContentObject();
 
-                } catch (UnreadableException e) {
-                    e.printStackTrace();
-                }
+            } catch (UnreadableException e) {
+                e.printStackTrace();
+            }
+            for (int i = 0; i < data.length; i++) {
+                predictedSpeeds[i] = (int) (data[i] * 10);
+            }
+           // System.out.println(predictedSpeeds[0]+" "+predictedSpeeds[1]+" "+predictedSpeeds[2]);
+            //System.out.println("s2." + taskType + " recieved speed data: " + data[taskType.ordinal()]);
 
-                // System.out.println("s2." + taskType + " recieved speed data: " + data[taskType.ordinal()]);
-
-                //System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
+            //System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
 
 
         }
     }
-
-
 }
 

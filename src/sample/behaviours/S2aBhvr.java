@@ -17,7 +17,7 @@ public class S2aBhvr extends S2Bhvr {
 
     @Override
     void updateUI() {
-        owner.simulation.controller.textS2aValue.setText(Double.toString(problemValue));
+        owner.simulation.controller.textS2aValue.setText(Double.toString(problemValues[taskType.ordinal()]));
         owner.simulation.controller.textS1aSpeed.setText(Double.toString(availableSpeed));
     }
 

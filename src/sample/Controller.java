@@ -171,7 +171,7 @@ drawShapes(gc);
 
 
         Group root = new Group();
-        Canvas canvas = new Canvas(600, 450);
+        Canvas canvas = new Canvas(2000, 450);
          gc = canvas.getGraphicsContext2D();
         drawShapes(gc);
         root.getChildren().add(canvas);

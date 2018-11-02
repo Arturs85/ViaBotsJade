@@ -33,8 +33,8 @@ public class Simulation {
     static ObservableList<String> roleList = FXCollections.observableArrayList("S1", "S2", "S3", "S4");
     static int agentNumber = 0;
     static int noOfRetoolings = 0;
-    int simStepDefDuration=1000;
-    int simTimeFactor =1;
+    int simStepDefDuration = 1000;
+    int simTimeFactor = 1;
     Timeline timeline;
     int simTime = 0;
     TaskGenerator taskGenerator;
@@ -47,10 +47,21 @@ public class Simulation {
     AID[] topics = new AID[5];
     public static boolean[] managingRolesFilled = new boolean[]{false, false, false, false, false};//s2.a, s2.b, s2.c,s3,s4
     public static String[] managingRoles = new String[]{"S2a", "S2b", "S2c", "S3", "S4"};
+    public static double avgPartArriveTime = 1.5; //for s3 calculations
+    public int[] incomingPartDist = new int[]{0, 0, 0};
+    public int lastIncPartDistCaptureTime = 0;
 
     //kārtas skaits ievietošanai jaunā aģenta vārdā
     int getAgentNumber() {
         return ++agentNumber;
+    }
+
+    public synchronized int[] getIncomingPartDist() {
+        if (lastIncPartDistCaptureTime == simTime) {
+            return null;
+        }
+        lastIncPartDistCaptureTime = simTime;
+        return incomingPartDist;
     }
 
     static synchronized void retoolingIncrement() {
@@ -83,8 +94,11 @@ public class Simulation {
         controller.update(simTime, ViaBot.totalFinishedTasks);
         if (tasks.size() < TASKS_LENGTH) {
             Task task = taskGenerator.simulationStep(simTime);
-            if (task != null)
+            Arrays.fill(incomingPartDist, 0);
+            if (task != null) {
                 tasks.add(task);
+                incomingPartDist[task.taskType.ordinal()]++;// counts incoming part distribution(currently no more than one part per iteration)
+            }
         } else
             beltStopedTime++;
         //lai nepārpildītos rinda- patur tikai pedējos pievienotos elementus
@@ -135,7 +149,7 @@ public class Simulation {
 
             }
         }
-        controller.guiAgent.sendMessageUI(isRunning,1);
+        controller.guiAgent.sendMessageUI(isRunning, 1);
     }
 
     void createGUIAgent() {
@@ -201,7 +215,7 @@ public class Simulation {
                     viaBot.currentTask = task;
                     viaBot.currentTask.isStarted = true;
                     viaBot.isWorking = true;
-viaBot.agentState=AgentState.WORKING;
+                    viaBot.agentState = AgentState.WORKING;
                     break;
                 }
             }
@@ -217,6 +231,47 @@ viaBot.agentState=AgentState.WORKING;
         }
     }
 
+    // counts, how many tasks of each type currently is available
+    public synchronized int[] getCurTaskDistribution(int[] dist) {
+        Arrays.fill(dist, 0);
+        for (Task task : tasks) {
+            dist[task.taskType.ordinal()]++;
+        }
+        return dist;
+    }
+
+
+    public synchronized String nameOfLeastValuedS1(TaskType taskType) {
+        int index = -1;
+        double minSpeedSoFar = Double.MAX_VALUE;
+
+        for (int i = 0; i < agents.size(); i++) {
+            if (agents.get(i).isS1 && agents.get(i).asignedTaskType.equals(taskType) && agents.get(i).getSpeed(taskType) < minSpeedSoFar)
+                index = i;
+        }
+        if (index > -1)
+            return agents.get(index).name;
+        else
+            return null;
+    }
+
+    public synchronized int[] speedsOfLeastValuedS1(TaskType taskType, int[] buf) {
+        int index = -1;
+        double minSpeedSoFar = Double.MAX_VALUE;
+
+        for (int i = 0; i < agents.size(); i++) {
+            if (agents.get(i).isS1 && agents.get(i).asignedTaskType.equals(taskType) && agents.get(i).getSpeed(taskType) <= minSpeedSoFar)
+                index = i;
+        }
+        if (index > -1) {
+            buf[0] = agents.get(index).getSpeedA();
+            buf[1] = agents.get(index).getSpeedB();
+            buf[2] = agents.get(index).getSpeedC();
+
+            return buf;
+        } else
+            return null;//no agents
+    }
 
     void registerListener() {
         if (cc != null) {

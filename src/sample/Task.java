@@ -13,7 +13,7 @@ public class Task {
     private static final TaskType[] VALUES = TaskType.values();
     private static final int SIZE = VALUES.length;
     private static final Random RANDOM = new Random();
-    private static final int[] taskDistribution = new int[]{10, 10, 80}; //sum of values should be 100
+    private static final int[] taskDistribution = new int[]{10, 10, 80}; //sums of values should be 100
 
 
     public static TaskType getRandomTask() {

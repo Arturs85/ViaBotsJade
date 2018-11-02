@@ -15,7 +15,7 @@ int order=1;
 
     @Override
     void updateUI() {
-        owner.simulation.controller.textS2bValue.setText(Double.toString(problemValue));
+        owner.simulation.controller.textS2bValue.setText(Double.toString(problemValues[taskType.ordinal()]));
         owner.simulation.controller.textS1bSpeed.setText(Double.toString(availableSpeed));
     }
 

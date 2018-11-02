@@ -37,10 +37,10 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
     public Label textCurTaskIdString;
     @FXML
     public VBox vBoxCurrTask;
-@FXML
-        public ProgressIndicator progressIndBatterry;
-@FXML
-   Label labelAgentState;
+    @FXML
+    public ProgressIndicator progressIndBatterry;
+    @FXML
+    Label labelAgentState;
 
     FXMLLoader mLLoader;
 
@@ -92,17 +92,16 @@ public class AgentInfoListCell extends ListCell<AgentInfo> {
                     textCurTaskIdString.setText("Part: " + item.getCurrentTaskId());
                 else
                     textCurTaskIdString.setText("Part: ");
-            }
-                else
+            } else
                 vBoxCurrTask.setVisible(false);
-                //textCurTaskIdString.setText("");
+            //textCurTaskIdString.setText("");
             double p = 0;
             if (item.currentTask != null) {
                 p = item.currentTask.progress / 100d;
             }
             agentWorkProgress.setProgress(p);
 
-            progressIndBatterry.setProgress(item.batteryCharge/100d);
+            progressIndBatterry.setProgress(item.batteryCharge / 100d);
             labelAgentState.setText(item.agentState.toString());
             // setText(null);
             setGraphic(hBox);

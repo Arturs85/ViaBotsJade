@@ -8,10 +8,7 @@ import jade.core.messaging.TopicManagementHelper;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import sample.AgentState;
-import sample.Task;
-import sample.TaskType;
-import sample.ViaBot;
+import sample.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -19,31 +16,23 @@ import java.util.Arrays;
 public class S3Bhvr extends BaseBhvr {
     AID s3Topic;
     AID s2Topic;
+    AID s4Topic;
+
     //  ViaBot owner;
     MessageTemplate tpl;
     MessageTemplate s3s2tpl;
     int[] s1Distribution = new int[]{0, 0, 0};
     int[] taskDistribution = new int[]{0, 0, 0};
     ExecutiveBehaviourType behaviourType = ExecutiveBehaviourType.S3;
-
+    double[] speeds = new double[]{0, 0, 0};
+    ACLMessage lastDistrMsg;
 
     public S3Bhvr(ViaBot owner, int ms) {
         super(owner, ms);
         //  this.owner = owner;
-        initilizeTopics();//dublējas ar nākošo
+         initilizeTopics();
 
-        TopicManagementHelper topicHelper = null;
-        try {
-            topicHelper = (TopicManagementHelper) myAgent.getHelper(TopicManagementHelper.SERVICE_NAME);
-            s3Topic = topicHelper.createTopic("S3");
-            s2Topic = topicHelper.createTopic("S2");
-            tpl = MessageTemplate.MatchTopic(s3Topic);
-            s3s2tpl = MessageTemplate.MatchTopic(s2Topic);
-            topicHelper.register(s3Topic);
 
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
     }
 
     int s3tickcount = 0;
@@ -51,13 +40,15 @@ public class S3Bhvr extends BaseBhvr {
     @Override
     protected void onTick() {
         super.onTick();
-        System.out.println(" s3count " + s3tickcount++);
+        //      System.out.println(" s3count " + s3tickcount++);
 
         receiveS3message();
         calcPrefDist();
         // sendMessageToS1();
+        getCurTaskDistribution();
+        calcSpeedsforS2();
         sendMessageToS2();
-
+sendMessageToS4();
         //battery discharge
         if (owner.agentState == AgentState.WORKING) {
             boolean isBatOk = owner.dischargeBattery(behaviourType);
@@ -65,6 +56,7 @@ public class S3Bhvr extends BaseBhvr {
                 owner.setToCharge();
             }
         }
+        System.out.println(owner.getCurQueueSize());
 
     }
 
@@ -85,6 +77,19 @@ public class S3Bhvr extends BaseBhvr {
 
 //        System.out.println(" pref agent dist " + s1DistrDesired[0] + " " + s1DistrDesired[1] + " " + s1DistrDesired[2]);
 // sadala uzdevumus proporcionali
+
+    }
+
+    //direct access to information about environment
+    void getCurTaskDistribution() {
+        taskDistribution = owner.simulation.getCurTaskDistribution(taskDistribution);
+
+    }
+
+    void calcSpeedsforS2() {
+        for (int i = 0; i < speeds.length; i++) {
+            speeds[i] = taskDistribution[i] * Simulation.avgPartArriveTime;
+        }
 
     }
 
@@ -111,7 +116,7 @@ public class S3Bhvr extends BaseBhvr {
 
         msg.addReceiver(s2Topic);
         try {
-            msg.setContentObject(new int[]{10, 15, 25});
+            msg.setContentObject(speeds);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -120,31 +125,54 @@ public class S3Bhvr extends BaseBhvr {
         myAgent.send(msg);
 
     }
+void sendMessageToS4(){
+        if(lastDistrMsg!=null)
+        {
+            lastDistrMsg.clearAllReceiver();
+            lastDistrMsg.addReceiver(s4Topic);
+        owner.send(lastDistrMsg);
+        }
+
+}
 
     void initilizeTopics() {
         TopicManagementHelper topicHelper = null;
         try {
             topicHelper = (TopicManagementHelper) myAgent.getHelper(TopicManagementHelper.SERVICE_NAME);
+            s3Topic = topicHelper.createTopic("S3");
+            s2Topic = topicHelper.createTopic("S2");
+            s4Topic = topicHelper.createTopic("S4");
+
+            if (s3Topic == null) System.out.println("s3topic == null; from s3bhv");
+
+            tpl = MessageTemplate.MatchTopic(s3Topic);
+            s3s2tpl = MessageTemplate.MatchTopic(s2Topic);
+            topicHelper.register(s3Topic);
+
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-        // s1Topic = topicHelper.createTopic("S1");
-
     }
 
     void receiveS3message() {
 
-        //ACLMessage msg = myAgent.receive(tpl);
-        // if (msg != null) {
+        ACLMessage msg = myAgent.receive(tpl);
+         if (msg != null) {
         ACLMessage msg2 = myAgent.receive(tpl);
 // apstrādā tikai pedējo ziņu
         if (msg2 == null) {
+            lastDistrMsg=msg;
+
             System.out.println(" received s3 broadcast");
             int[][] data;
             try {
-                data = (int[][]) msg2.getContentObject();
-                s1Distribution = data[0];
-                taskDistribution = data[1];
+                Object o = (int[][]) msg.getContentObject();
+                if (o != null) {
+                    data = (int[][]) o;
+                    s1Distribution = data[0];
+                    taskDistribution = data[1];
+                } else
+                    System.out.println("s3 received msg with null data");
             } catch (UnreadableException e) {
                 e.printStackTrace();
             }
@@ -152,8 +180,7 @@ public class S3Bhvr extends BaseBhvr {
 
             System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
 
-        } //else receiveS3message(); //recu
-    }
-    // }
-
+        } else receiveS3message(); //recu
+        }
+     }
 }
