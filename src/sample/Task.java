@@ -35,6 +35,8 @@ public class Task {
 
     public static final int FULL_PROGRESS = 100;
     int timeCreated;
+    int timeStarted;
+    int timeFinished;
     boolean isFinished = false;
     boolean isStarted = false; //  or rather inProgress
     public int progress = 0;
@@ -50,7 +52,7 @@ public class Task {
     @Override
     public String toString() {
         //    return super.toString();
-        return "Part " + id + "  Type: " + taskType + " created: " + timeCreated + " Progress: " + progress;
+        return "Part " + id + "  Type: " + taskType + " c: " + timeCreated+ " s: " + timeStarted+ " f: " + timeFinished + " P: " + progress;
     }
 
 void abandonTask(){

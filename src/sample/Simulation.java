@@ -122,7 +122,7 @@ public class Simulation {
         // Create a default profile
         Profile p = new ProfileImpl();
         p.setParameter(Profile.GUI, "true");
-        p.setParameter(Profile.SERVICES, "jade.core.messaging.TopicManagementService");
+        p.setParameter(Profile.SERVICES, "jade.core.messaging.TopicManagementService;jade.core.event.NotificationService");
 
         //p.setParameter(Profile.SERVICES,"TopicManagement");
         // Create a new non-main container, connecting to the default
@@ -131,12 +131,12 @@ public class Simulation {
         return cc;
     }
 
-    void createAgent(String initialBehaviour, int[] speed) {
+    void createAgent(String initialBehaviour, int[] speed,int[] energyCons) {
         if (cc != null) {
             // Create a new agent, a DummyAgent
 // and pass it a reference to an Object
             Object reference = new Object();
-            Object args[] = new Object[]{reference, tasks, agents, finishedTasks, initialBehaviour, this};
+            Object args[] = new Object[]{reference, tasks, agents, finishedTasks, initialBehaviour, this,speed,energyCons};
 
             try {
                 AgentController dummy = cc.createNewAgent("ViaBot " + getAgentNumber(),
@@ -149,7 +149,7 @@ public class Simulation {
 
             }
         }
-        controller.guiAgent.sendMessageUI(isRunning, 1);
+        controller.guiAgent.sendMessageUI(isRunning);
     }
 
     void createGUIAgent() {
@@ -185,13 +185,12 @@ public class Simulation {
                 });
             }
         }
-
     }
 
     public synchronized void moveToFinishedList(ViaBot viaBot) {
         int finishedTaskIndex = tasks.indexOf(viaBot.currentTask);
         if (finishedTaskIndex >= 0) {
-
+            viaBot.currentTask.timeFinished = simTime;
 
             finishedTasks.add(tasks.get(finishedTaskIndex));
             tasks.remove(finishedTaskIndex);
@@ -214,6 +213,7 @@ public class Simulation {
                 if (task.taskType.equals(viaBot.assignedTaskType) && !task.isStarted) {
                     viaBot.currentTask = task;
                     viaBot.currentTask.isStarted = true;
+                    viaBot.currentTask.timeStarted = simTime;
                     viaBot.isWorking = true;
                     viaBot.agentState = AgentState.WORKING;
                     break;

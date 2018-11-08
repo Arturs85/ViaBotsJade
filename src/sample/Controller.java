@@ -67,7 +67,8 @@ public  void initialize(){
      //   System.out.println("Speed slider value changed "+ newValue);
         simulation.timeline.setRate(newValue.intValue());//setDelay(Duration.millis(simulation.simStepDefDuration/newValue.intValue()));
         if (guiAgent != null) {
-            guiAgent.sendMessageUI(simulation.isRunning,newValue.intValue());
+            guiAgent.simSpeedFactor=newValue.intValue();
+            guiAgent.sendMessageUI(simulation.isRunning);
 
         }
 
@@ -111,7 +112,7 @@ public  void initialize(){
         simulation.timeline.play();
         simulation.isRunning = true;
         if (guiAgent != null) {
-            guiAgent.sendMessageUI(true,-1);
+            guiAgent.sendMessageUI(true);
 
         }
 
@@ -125,7 +126,7 @@ public  void initialize(){
         simulation.timeline.stop();
         simulation.isRunning = false;
         if (guiAgent != null) {
-            guiAgent.sendMessageUI(false,-1);
+            guiAgent.sendMessageUI(false);
 
         }
     }

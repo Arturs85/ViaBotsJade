@@ -62,7 +62,7 @@ public class S2ExchangerBhvr extends Behaviour {
 
     void queryFirstProto() {
 
-        if (ownerTaskType.equals(indexOfMax(pValues)))
+        if (ownerTaskType.equals(indexOfMax(pValues))&&pValues[ownerTaskType.ordinal()]>0)
             callForProposal(ownerTaskType);
 
         listenForCfp();
@@ -142,15 +142,15 @@ public class S2ExchangerBhvr extends Behaviour {
         myAgent.send(cfp);
 
         //waits for replay (y/n)
-        MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CONFIRM);
-        ACLMessage msg = myAgent.receive(mt);
-        if (msg != null) {
+   //     MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CONFIRM);
+    //    ACLMessage msg = myAgent.receive(mt);
+     //   if (msg != null) {
 // Message received. Process it
             //      System.out.println("received confirmation");
 
-        } else {
-            block(100);
-        }
+        //} else {
+       //   block(100);
+        //}
 
     }
 
@@ -174,22 +174,18 @@ public class S2ExchangerBhvr extends Behaviour {
                 }
 
 //check, if giving away agent does not put giver in worst situation than receiver
-                int[] proposedAgentSpeeds=new int[]{0,0,0};
-               proposedAgentSpeeds=owner.simulation.speedsOfLeastValuedS1(ownerTaskType,proposedAgentSpeeds);
+                int[] proposedAgentSpeeds = new int[]{0,0,0};
+               proposedAgentSpeeds = owner.simulation.speedsOfLeastValuedS1(ownerTaskType,proposedAgentSpeeds);
                 if(checkForSustainableExchange(proposedTaskType, proposedAgentSpeeds)==false)//funkcija lai iegūtu masīvu ar iespējāmā nododamā aģenta ātrumiem
                     return;
-                System.out.println(owner.getName()+" will give agent");
+                System.out.println(owner.getName()+" will give agent "+ownerTaskType+" ->"+proposedTaskType+" "+pValues[ownerTaskType.ordinal()]+"->"+pValues[proposedTaskType.ordinal()]);
 
                 String name = owner.nameOfLeastValuedS1(ownerTaskType);
                 if (name != null) {//??NOt always replaying to cfp??
 
-
-
-                    ACLMessage replay = new ACLMessage(ACLMessage.CONFIRM);
-
+                    ACLMessage replay = new ACLMessage(ACLMessage.CONFIRM);//useless
                     replay.addReceiver(msg.getSender());
                     owner.send(replay);
-
 
                     //  System.out.println("sending order to s1 named " + name);
                     ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
@@ -201,7 +197,6 @@ public class S2ExchangerBhvr extends Behaviour {
                     }
                     request.addReceiver(new AID(name));
                     myAgent.send(request);
-
                 }
             }
         }
@@ -217,13 +212,13 @@ public class S2ExchangerBhvr extends Behaviour {
 
        //if(askedFor==null) System.out.println("asked type  = null");
         if(agentToGiveAwaySpeeds==null) return false;//no agents to give // System.out.println("speeds = null");
-        System.out.println("have agents to give");
+      //  System.out.println("have agents to give");
 
 
-        double giverPvalAfterExchg = pValues[ownerTaskType.ordinal()] - agentToGiveAwaySpeeds[ownerTaskType.ordinal()];
+        double giverPvalAfterExchg = pValues[ownerTaskType.ordinal()] + agentToGiveAwaySpeeds[ownerTaskType.ordinal()];
       //  System.out.println("giver val "+giverPvalAfterExchg);
 
-        double receiverPvalAfterExchg = pValues[askedFor.ordinal()] + agentToGiveAwaySpeeds[askedFor.ordinal()];
+        double receiverPvalAfterExchg = pValues[askedFor.ordinal()] - agentToGiveAwaySpeeds[askedFor.ordinal()];
       //  System.out.println("rec val "+receiverPvalAfterExchg);
         if (giverPvalAfterExchg < receiverPvalAfterExchg)
             return true;
@@ -257,8 +252,6 @@ public class S2ExchangerBhvr extends Behaviour {
 
             }
         }
-
-
     }
 
 

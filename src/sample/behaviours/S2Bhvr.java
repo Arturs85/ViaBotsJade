@@ -53,7 +53,7 @@ public abstract class S2Bhvr extends BaseBhvr {
         sendMessageTests3();
         receiveS2message();
         availableSpeeds = calculateAvailableSpeeds(availableSpeeds);
-       calculateProblemValues();
+        calculateProblemValues();
         owner.addBehaviour(new S2ExchangerBhvr(owner, problemValues, taskType));
 
         availableSpeed = calculateAvailableSpeed();
@@ -91,6 +91,7 @@ public abstract class S2Bhvr extends BaseBhvr {
         for (int i = 0; i < problemValues.length; i++) {
             //vals[i] = PREDICTION_WEIGHT * predictedSpeeds[i] + LOCAL_INFO_WEIGHT * taskDistribution[i];
             problemValues[i] = predictedSpeeds[i] - availableSpeeds[i];
+            //       System.out.println("ps: "+predictedSpeeds[0]+" "+predictedSpeeds[1]+" "+predictedSpeeds[2]);
         }
     }
 
@@ -100,9 +101,11 @@ public abstract class S2Bhvr extends BaseBhvr {
             for (Behaviour be :
                     ai.behaviours) {
                 if (be.getBehaviourName().contains("S1"))
-                    availableSpeeds[((ViaBot) be.getAgent()).assignedTaskType.ordinal()] += ai.getSpeed(taskType);
+                    availableSpeeds[((ViaBot) be.getAgent()).assignedTaskType.ordinal()] += ai.getSpeed(((ViaBot) be.getAgent()).assignedTaskType);
             }
         }
+        //   System.out.println("as: "+availableSpeeds[0]+" "+availableSpeeds[1]+" "+availableSpeeds[2]);
+
         return availableSpeeds;
     }
 
@@ -121,7 +124,7 @@ public abstract class S2Bhvr extends BaseBhvr {
 
 
     void sendMessageTests3() {
-        int[][] data = new int[][]{s1Distribution, taskDistribution,owner.simulation.incomingPartDist};
+        int[][] data = new int[][]{s1Distribution, taskDistribution, owner.simulation.incomingPartDist};
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         try {
             msg.setContentObject(data);
@@ -176,7 +179,7 @@ public abstract class S2Bhvr extends BaseBhvr {
             for (int i = 0; i < data.length; i++) {
                 predictedSpeeds[i] = (int) (data[i] * 10);
             }
-           // System.out.println(predictedSpeeds[0]+" "+predictedSpeeds[1]+" "+predictedSpeeds[2]);
+            // System.out.println(predictedSpeeds[0]+" "+predictedSpeeds[1]+" "+predictedSpeeds[2]);
             //System.out.println("s2." + taskType + " recieved speed data: " + data[taskType.ordinal()]);
 
             //System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);

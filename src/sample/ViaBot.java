@@ -20,6 +20,9 @@ public class ViaBot extends Agent {
     public static int count = 1;
     public static int totalFinishedTasks = 0;
 
+    public static int[] defSpeed = {23, 14, 19, 1, 1, 1};//A,B,C
+    public static int[] defEnergyCons = {2, 3, 4, 1, 1, 1};
+
     public int[] speed = {23, 14, 19, 1, 1, 1};//A,B,C
     public int[] finishedTasksCount = {0, 0, 0};//A,B,C
     public int[] energyCons = {2, 3, 4, 1, 1, 1};
@@ -38,7 +41,7 @@ public class ViaBot extends Agent {
     public Simulation simulation;
     public AgentState agentState = AgentState.IDLE;
     public Battery battery;
-public int speedFactor =1;
+    public int speedFactor = 1;
 
     protected void setup() {
         battery = new Battery();
@@ -49,6 +52,8 @@ public int speedFactor =1;
         this.finishedTasksList = (ObservableList) args[3];
         mAddBehaviour((String) args[4]);
         this.simulation = (Simulation) args[5];
+        this.speed = (int[]) args[6];
+        this.energyCons = (int[]) args[7];
 
     }
 
@@ -67,10 +72,10 @@ public int speedFactor =1;
             behaviour = new S2cBhvr(this, 1000);
             Simulation.managingRolesFilled[2] = true;
         } else if (behaviourString.contains("S3")) {
-            behaviour = new S3Bhvr(this, 3000);
+            behaviour = new S3Bhvr(this, 1000);
             Simulation.managingRolesFilled[3] = true;
         } else if (behaviourString.contains("S4")) {
-            behaviour = new S4Bhvr(this, 3000);
+            behaviour = new S4Bhvr(this, 1000);
             Simulation.managingRolesFilled[4] = true;
         } else {
             System.out.println("Unable to recognize string: " + behaviourString + ",to create bahaviour");

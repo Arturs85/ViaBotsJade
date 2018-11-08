@@ -20,7 +20,7 @@ public class GUIAgent extends Agent {
     TopicManagementHelper topicHelper = null;
     AID uiTopic; //ui ziņu temats(piem, stop/run)
     MessageTemplate uiMsgTpl;
-
+int simSpeedFactor=1;
     protected void setup() {
 
         Object[] args = getArguments();
@@ -42,9 +42,9 @@ public class GUIAgent extends Agent {
         }
     }
 
-    void sendMessageUI(boolean isRunning, int simSpeedFactor) {
+    void sendMessageUI(boolean isRunning) {
         System.out.println("sending ui is running: " + isRunning);
-        GuiAgentMessageToOther data = new GuiAgentMessageToOther(isRunning, simSpeedFactor);
+        GuiAgentMessageToOther data = new GuiAgentMessageToOther(isRunning,simSpeedFactor );
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         try {
             msg.setContentObject(data);

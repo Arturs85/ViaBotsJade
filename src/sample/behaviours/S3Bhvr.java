@@ -23,6 +23,8 @@ public class S3Bhvr extends BaseBhvr {
     MessageTemplate s3s2tpl;
     int[] s1Distribution = new int[]{0, 0, 0};
     int[] taskDistribution = new int[]{0, 0, 0};
+    int[] taskDistributionTest = new int[]{1, 1, 6};
+
     ExecutiveBehaviourType behaviourType = ExecutiveBehaviourType.S3;
     double[] speeds = new double[]{0, 0, 0};
     ACLMessage lastDistrMsg;
@@ -30,7 +32,7 @@ public class S3Bhvr extends BaseBhvr {
     public S3Bhvr(ViaBot owner, int ms) {
         super(owner, ms);
         //  this.owner = owner;
-         initilizeTopics();
+        initilizeTopics();
 
 
     }
@@ -44,11 +46,12 @@ public class S3Bhvr extends BaseBhvr {
 
         receiveS3message();
         calcPrefDist();
-        // sendMessageToS1();
-        getCurTaskDistribution();
+
+//getCurTaskDistribution();
+
         calcSpeedsforS2();
         sendMessageToS2();
-sendMessageToS4();
+        sendMessageToS4();
         //battery discharge
         if (owner.agentState == AgentState.WORKING) {
             boolean isBatOk = owner.dischargeBattery(behaviourType);
@@ -56,7 +59,7 @@ sendMessageToS4();
                 owner.setToCharge();
             }
         }
-        System.out.println(owner.getCurQueueSize());
+        System.out.println("S3 ownr msgQ size" + owner.getCurQueueSize());
 
     }
 
@@ -125,15 +128,15 @@ sendMessageToS4();
         myAgent.send(msg);
 
     }
-void sendMessageToS4(){
-        if(lastDistrMsg!=null)
-        {
+
+    void sendMessageToS4() {// if s3 recieves multiple identical messages from s2`s, still it sends onely one to s4
+        if (lastDistrMsg != null) {
             lastDistrMsg.clearAllReceiver();
             lastDistrMsg.addReceiver(s4Topic);
-        owner.send(lastDistrMsg);
+            owner.send(lastDistrMsg);
         }
 
-}
+    }
 
     void initilizeTopics() {
         TopicManagementHelper topicHelper = null;
@@ -157,30 +160,30 @@ void sendMessageToS4(){
     void receiveS3message() {
 
         ACLMessage msg = myAgent.receive(tpl);
-         if (msg != null) {
-        ACLMessage msg2 = myAgent.receive(tpl);
+        if (msg != null) {
+            ACLMessage msg2 = myAgent.receive(tpl);
 // apstrādā tikai pedējo ziņu
-        if (msg2 == null) {
-            lastDistrMsg=msg;
+            if (msg2 == null) {
+                lastDistrMsg = msg;
 
-            System.out.println(" received s3 broadcast");
-            int[][] data;
-            try {
-                Object o = (int[][]) msg.getContentObject();
-                if (o != null) {
-                    data = (int[][]) o;
-                    s1Distribution = data[0];
-                    taskDistribution = data[1];
-                } else
-                    System.out.println("s3 received msg with null data");
-            } catch (UnreadableException e) {
-                e.printStackTrace();
-            }
-            System.out.println("s3 : Agentinfo size: " + owner.agentsList.size());
+                //   System.out.println(" received s3 broadcast");
+                int[][] data;
+                try {
+                    Object o = (int[][]) msg.getContentObject();
+                    if (o != null) {
+                        data = (int[][]) o;
+                        s1Distribution = data[0];
+                        taskDistribution = data[1];
+                    } else
+                        System.out.println("s3 received msg with null data");
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+                //   System.out.println("s3 : Agentinfo size: " + owner.agentsList.size());
 
-            System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
+                //   System.out.println("s3 s1: A: " + s1Distribution[0] + " B: " + s1Distribution[1] + " C: " + s1Distribution[2]);
 
-        } else receiveS3message(); //recu
+            } else receiveS3message(); //recu
         }
-     }
+    }
 }
