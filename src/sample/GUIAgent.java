@@ -43,7 +43,7 @@ int simSpeedFactor=1;
     }
 
     void sendMessageUI(boolean isRunning) {
-        System.out.println("sending ui is running: " + isRunning);
+    //    System.out.println("sending ui is running: " + isRunning);
         GuiAgentMessageToOther data = new GuiAgentMessageToOther(isRunning,simSpeedFactor );
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         try {

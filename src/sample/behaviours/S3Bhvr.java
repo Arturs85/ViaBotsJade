@@ -59,7 +59,7 @@ public class S3Bhvr extends BaseBhvr {
                 owner.setToCharge();
             }
         }
-        System.out.println("S3 ownr msgQ size" + owner.getCurQueueSize());
+      //  System.out.println("S3 ownr msgQ size" + owner.getCurQueueSize());
 
     }
 
@@ -129,7 +129,7 @@ public class S3Bhvr extends BaseBhvr {
 
     }
 
-    void sendMessageToS4() {// if s3 recieves multiple identical messages from s2`s, still it sends onely one to s4
+    void sendMessageToS4() {// if s3 recieves multiple identical messages from s2`s, still it sends only one to s4
         if (lastDistrMsg != null) {
             lastDistrMsg.clearAllReceiver();
             lastDistrMsg.addReceiver(s4Topic);

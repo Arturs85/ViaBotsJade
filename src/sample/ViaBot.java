@@ -20,7 +20,7 @@ public class ViaBot extends Agent {
     public static int count = 1;
     public static int totalFinishedTasks = 0;
 
-    public static int[] defSpeed = {23, 14, 19, 1, 1, 1};//A,B,C
+    public static int[] defSpeed = {9, 8, 7, 1, 1, 1};//A,B,C
     public static int[] defEnergyCons = {2, 3, 4, 1, 1, 1};
 
     public int[] speed = {23, 14, 19, 1, 1, 1};//A,B,C

@@ -172,7 +172,7 @@ drawShapes(gc);
 
 
         Group root = new Group();
-        Canvas canvas = new Canvas(2000, 450);
+        Canvas canvas = new Canvas(2000, 1000);
          gc = canvas.getGraphicsContext2D();
         drawShapes(gc);
         root.getChildren().add(canvas);
@@ -193,9 +193,10 @@ drawShapes(gc);
                 simulation.simTime,gc.getCanvas().getHeight()-Simulation.getNoOfRetoolings());
          gc.setStroke(Color.RED);
 
-         gc.strokeLine(simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedFactor,
-                 simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedFactor);
+         gc.strokeLine(simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedTime,
+                 simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedTime);
 
+         System.out.println(simulation.simTime+" "+simulation.beltStopedTime+" "+Simulation.getNoOfRetoolings());
 
 
 

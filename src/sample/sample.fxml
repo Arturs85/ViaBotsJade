@@ -55,7 +55,7 @@
             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" >
               <items>
                   <Label prefHeight="25.0" text="Agents" textAlignment="CENTER" />
-                   <ListView fx:id="workingAgentsListView" prefHeight="311.0" prefWidth="600.0" />
+                   <ListView fx:id="workingAgentsListView" prefHeight="311.0" prefWidth="650.0" />
               </items>
             </SplitPane>
              <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" >

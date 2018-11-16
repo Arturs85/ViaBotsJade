@@ -47,7 +47,7 @@ public class Simulation {
     AID[] topics = new AID[5];
     public static boolean[] managingRolesFilled = new boolean[]{false, false, false, false, false};//s2.a, s2.b, s2.c,s3,s4
     public static String[] managingRoles = new String[]{"S2a", "S2b", "S2c", "S3", "S4"};
-    public static double avgPartArriveTime = 1.5; //for s3 calculations
+    public static double avgPartArriveTime = 1.5; //for s3 calculations, time- nr of iterations
     public int[] incomingPartDist = new int[]{0, 0, 0};
     public int lastIncPartDistCaptureTime = 0;
 
@@ -57,6 +57,7 @@ public class Simulation {
     }
 
     public synchronized int[] getIncomingPartDist() {
+
         if (lastIncPartDistCaptureTime == simTime) {
             return null;
         }

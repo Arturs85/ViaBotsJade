@@ -20,7 +20,7 @@ public class Task {
         return VALUES[RANDOM.nextInt(SIZE)];
     }
 
-    public static TaskType getRandomTaskFromDistribution() {
+    public static TaskType getRandomTaskFromDistribution(int[] taskDistribution) {
         int uniformRandValue = RANDOM.nextInt(Arrays.stream(taskDistribution).sum());
        // System.out.println("rndVal= "+uniformRandValue);
         if (uniformRandValue <= taskDistribution[0])
@@ -41,12 +41,20 @@ public class Task {
     boolean isStarted = false; //  or rather inProgress
     public int progress = 0;
 
+    Task(int timeStep,int[] taskDistribution) {
+        id = count++;
+        //taskType = getRandomTask();
+        taskType=getRandomTaskFromDistribution(taskDistribution);
+        this.timeCreated = timeStep;
+    }
+
     Task(int timeStep) {
         id = count++;
         //taskType = getRandomTask();
-        taskType=getRandomTaskFromDistribution();
+        taskType=getRandomTaskFromDistribution(taskDistribution);
         this.timeCreated = timeStep;
     }
+
 
 
     @Override

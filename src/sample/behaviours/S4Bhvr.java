@@ -58,7 +58,7 @@ initilizeTopics();
 //
 receiveS3message();
     statistics.calcAverageDist();
-        System.out.println("s4 avg: "+statistics.avg[0]+" "+statistics.avg[1]+" "+statistics.avg[2]);
+     //   System.out.println("s4 avg: "+statistics.avg[0]+" "+statistics.avg[1]+" "+statistics.avg[2]);
     }
 
     void initilizeTopics() {

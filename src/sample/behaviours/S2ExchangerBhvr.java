@@ -178,7 +178,7 @@ public class S2ExchangerBhvr extends Behaviour {
                proposedAgentSpeeds = owner.simulation.speedsOfLeastValuedS1(ownerTaskType,proposedAgentSpeeds);
                 if(checkForSustainableExchange(proposedTaskType, proposedAgentSpeeds)==false)//funkcija lai iegūtu masīvu ar iespējāmā nododamā aģenta ātrumiem
                     return;
-                System.out.println(owner.getName()+" will give agent "+ownerTaskType+" ->"+proposedTaskType+" "+pValues[ownerTaskType.ordinal()]+"->"+pValues[proposedTaskType.ordinal()]);
+         //       System.out.println(owner.getName()+" will give agent "+ownerTaskType+" ->"+proposedTaskType+" "+pValues[ownerTaskType.ordinal()]+"->"+pValues[proposedTaskType.ordinal()]);
 
                 String name = owner.nameOfLeastValuedS1(ownerTaskType);
                 if (name != null) {//??NOt always replaying to cfp??
