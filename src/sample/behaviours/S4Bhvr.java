@@ -8,6 +8,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import sample.AgentState;
 import sample.Statistics;
+import sample.TaskGenerator;
 import sample.ViaBot;
 
 import java.util.LinkedList;
@@ -19,8 +20,8 @@ public class S4Bhvr extends BaseBhvr {
     //  ViaBot owner;
     MessageTemplate tpl;
     Statistics statistics = new Statistics();
-
-
+TaskGenerator taskGenerator = new TaskGenerator();
+int[] predictedSpeeds = new int[]{1,1,1};
 
 
 
@@ -47,7 +48,7 @@ initilizeTopics();
     protected void onTick() {
         super.onTick();
         //  System.out.println(" s4c "+s4count++);
-
+taskGenerator.simulationStep(s4count);
         //battery discharge
         if (owner.agentState == AgentState.WORKING) {
             boolean isBatOk = owner.dischargeBattery(behaviourType);
@@ -59,6 +60,7 @@ initilizeTopics();
 receiveS3message();
     statistics.calcAverageDist();
      //   System.out.println("s4 avg: "+statistics.avg[0]+" "+statistics.avg[1]+" "+statistics.avg[2]);
+   s4count++;
     }
 
     void initilizeTopics() {

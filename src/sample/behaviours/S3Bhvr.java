@@ -25,6 +25,7 @@ public class S3Bhvr extends BaseBhvr {
     int[] taskDistribution = new int[]{0, 0, 0};
     int[] taskDistributionTest = new int[]{1, 1, 6};
 
+    TaskGenerator taskGenerator = new TaskGenerator();
     ExecutiveBehaviourType behaviourType = ExecutiveBehaviourType.S3;
     double[] speeds = new double[]{0, 0, 0};
     ACLMessage lastDistrMsg;
@@ -43,7 +44,7 @@ public class S3Bhvr extends BaseBhvr {
     protected void onTick() {
         super.onTick();
         //      System.out.println(" s3count " + s3tickcount++);
-
+taskGenerator.simulationStep(s3tickcount);
         receiveS3message();
         calcPrefDist();
 
@@ -59,6 +60,7 @@ public class S3Bhvr extends BaseBhvr {
                 owner.setToCharge();
             }
         }
+     s3tickcount++;
       //  System.out.println("S3 ownr msgQ size" + owner.getCurQueueSize());
 
     }
@@ -91,7 +93,10 @@ public class S3Bhvr extends BaseBhvr {
 
     void calcSpeedsforS2() {
         for (int i = 0; i < speeds.length; i++) {
-            speeds[i] = taskDistribution[i] * Simulation.avgPartArriveTime;
+         //   speeds[i] = taskDistribution[i] * Simulation.avgPartArriveTime;
+        //temp
+
+            speeds[i] = (taskGenerator.curentPeriodTaskDistribution[i] /10+taskDistribution[i] * Simulation.avgPartArriveTime)/2;
         }
 
     }

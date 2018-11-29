@@ -11,8 +11,8 @@ public class TaskGenerator {
     int taskRate =70;
     int periodLocalCounter=0;
     int periodLength=0;
-   int[] curentPeriodTaskDistribution= new int[]{1,1,1};
-    TaskGenerator(){
+  public int[] curentPeriodTaskDistribution= new int[]{1,1,1};
+   public TaskGenerator(){
         taskDistributions.add(new DistributionWTime(new int[]{50,30,20},0,200));
         taskDistributions.add(new DistributionWTime(new int[]{10,20,70},200,400));
         taskDistributions.add(new DistributionWTime(new int[]{30,40,30},400,600));
@@ -37,7 +37,7 @@ periodLength=periodSum();
        }
    }
 
-    Task simulationStep(int stepNr){
+ public    Task simulationStep(int stepNr){
         if(periodLocalCounter>periodLength){
             periodLocalCounter=0;
         }

@@ -196,9 +196,7 @@ drawShapes(gc);
          gc.strokeLine(simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedTime,
                  simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedTime);
 
-         System.out.println(simulation.simTime+" "+simulation.beltStopedTime+" "+Simulation.getNoOfRetoolings());
-
-
+        // System.out.println(simulation.simTime+" "+simulation.beltStopedTime+" "+Simulation.getNoOfRetoolings());
 
      }
 
