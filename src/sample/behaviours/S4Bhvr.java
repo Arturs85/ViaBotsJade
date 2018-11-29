@@ -6,10 +6,7 @@ import jade.core.messaging.TopicManagementHelper;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import sample.AgentState;
-import sample.Statistics;
-import sample.TaskGenerator;
-import sample.ViaBot;
+import sample.*;
 
 import java.util.LinkedList;
 
@@ -22,6 +19,8 @@ public class S4Bhvr extends BaseBhvr {
     Statistics statistics = new Statistics();
 TaskGenerator taskGenerator = new TaskGenerator();
 int[] predictedSpeeds = new int[]{1,1,1};
+    double[] speeds = new double[]{0, 0, 0};
+    int[] taskDistribution = new int[]{0, 0, 0};
 
 
 
@@ -62,6 +61,17 @@ receiveS3message();
      //   System.out.println("s4 avg: "+statistics.avg[0]+" "+statistics.avg[1]+" "+statistics.avg[2]);
    s4count++;
     }
+
+    void calcSpeedsforS3() {
+        for (int i = 0; i < speeds.length; i++) {
+            //   speeds[i] = taskDistribution[i] * Simulation.avgPartArriveTime;
+            //temp
+
+            speeds[i] = (taskGenerator.curentPeriodTaskDistribution[i] /10+taskDistribution[i] * Simulation.avgPartArriveTime)/2;
+        }
+
+    }
+
 
     void initilizeTopics() {
         TopicManagementHelper topicHelper = null;
