@@ -17,14 +17,17 @@ public class S3Bhvr extends BaseBhvr {
     AID s3Topic;
     AID s2Topic;
     AID s4Topic;
+    AID s4s3Topic;
 
     //  ViaBot owner;
     MessageTemplate tpl;
     MessageTemplate s3s2tpl;
+    MessageTemplate s4s3tpl;
+
     int[] s1Distribution = new int[]{0, 0, 0};
     int[] taskDistribution = new int[]{0, 0, 0};
     int[] taskDistributionTest = new int[]{1, 1, 6};
-
+    double[] predictedSpeeds = new double[]{1, 1, 1};
     TaskGenerator taskGenerator = new TaskGenerator();
     ExecutiveBehaviourType behaviourType = ExecutiveBehaviourType.S3;
     double[] speeds = new double[]{0, 0, 0};
@@ -44,7 +47,7 @@ public class S3Bhvr extends BaseBhvr {
     protected void onTick() {
         super.onTick();
         //      System.out.println(" s3count " + s3tickcount++);
-taskGenerator.simulationStep(s3tickcount);
+        taskGenerator.simulationStep(s3tickcount);
         receiveS3message();
         calcPrefDist();
 
@@ -60,8 +63,9 @@ taskGenerator.simulationStep(s3tickcount);
                 owner.setToCharge();
             }
         }
-     s3tickcount++;
-      //  System.out.println("S3 ownr msgQ size" + owner.getCurQueueSize());
+        receiveS4S3message();
+        s3tickcount++;
+        //  System.out.println("S3 ownr msgQ size" + owner.getCurQueueSize());
 
     }
 
@@ -93,10 +97,10 @@ taskGenerator.simulationStep(s3tickcount);
 
     void calcSpeedsforS2() {
         for (int i = 0; i < speeds.length; i++) {
-         //   speeds[i] = taskDistribution[i] * Simulation.avgPartArriveTime;
-        //temp
+            //   speeds[i] = taskDistribution[i] * Simulation.avgPartArriveTime;
+            //temp
 
-            speeds[i] = (taskGenerator.curentPeriodTaskDistribution[i] /10+taskDistribution[i] * Simulation.avgPartArriveTime)/2;
+            speeds[i] = (predictedSpeeds[i] + taskDistribution[i] * Simulation.avgPartArriveTime) / 2;
         }
 
     }
@@ -150,12 +154,13 @@ taskGenerator.simulationStep(s3tickcount);
             s3Topic = topicHelper.createTopic("S3");
             s2Topic = topicHelper.createTopic("S2");
             s4Topic = topicHelper.createTopic("S4");
-
+            s4s3Topic = topicHelper.createTopic("S4S3");
             if (s3Topic == null) System.out.println("s3topic == null; from s3bhv");
 
             tpl = MessageTemplate.MatchTopic(s3Topic);
             s3s2tpl = MessageTemplate.MatchTopic(s2Topic);
             topicHelper.register(s3Topic);
+            topicHelper.register(s4s3Topic);
 
         } catch (ServiceException e) {
             e.printStackTrace();
@@ -191,4 +196,33 @@ taskGenerator.simulationStep(s3tickcount);
             } else receiveS3message(); //recu
         }
     }
+
+    void receiveS4S3message() {
+
+        ACLMessage msg = myAgent.receive(s4s3tpl);
+        if (msg != null) {
+            ACLMessage msg2 = myAgent.receive(s4s3tpl);
+// apstrādā tikai pedējo ziņu
+            if (msg2 == null) {
+                lastDistrMsg = msg;
+
+                try {
+                    Object o = msg.getContentObject();
+                    if (o != null) {
+                        predictedSpeeds = (double[]) o;
+
+                    } else
+                        System.out.println("s3 received msg from s4 with null data");
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+                //   System.out.println("s3 : Agentinfo size: " + owner.agentsList.size());
+
+                System.out.println("s3<--s4: A: " + predictedSpeeds[0] + " B: " + predictedSpeeds[1] + " C: " + predictedSpeeds[2]);
+
+            } else receiveS4S3message(); //recu
+        }
+    }
+
+
 }
