@@ -21,11 +21,13 @@ public class S1Bhvr extends BaseBhvr {
 
     ViaBot owner;
     MessageTemplate tpl;
+ToolChanger toolChanger;
+AgentState previousState;
 
     public S1Bhvr(ViaBot owner, int ms) {
         super(owner, ms);
         this.owner = owner;
-
+        toolChanger = new ToolChanger();
         TopicManagementHelper topicHelper = null;
         try {
             topicHelper = (TopicManagementHelper) myAgent.getHelper(TopicManagementHelper.SERVICE_NAME);
@@ -63,6 +65,14 @@ public class S1Bhvr extends BaseBhvr {
 
         }
         receiveTypeChangeMessage();
+
+       boolean justFinishedChange= toolChanger.simStep();
+       if(toolChanger.isChanging)
+           owner.agentState=AgentState.RECONFIGURING;
+       if(justFinishedChange) {
+           owner.assignTaskType(toolChanger.nextTaskType);
+       owner.agentState=previousState;
+       }
 
         if (owner.agentState == AgentState.WORKING) {
             boolean isBatOk = owner.dischargeBattery(owner.assignedTaskType);
@@ -157,7 +167,8 @@ info.setSpeedA(owner.speed[0]);
                 boolean[] data;
                 try {
                     TransferS1MsgObj msgInfo = (TransferS1MsgObj) msg.getContentObject();
-                    owner.assignTaskType(msgInfo.desiredType);
+                    startToolChange(msgInfo.desiredType);
+                    //owner.assignTaskType(msgInfo.desiredType);
                     //       System.out.println(owner.getName() + " changed task type to " + owner.assignedTaskType);
                 } catch (UnreadableException e) {
                     e.printStackTrace();
@@ -166,5 +177,10 @@ info.setSpeedA(owner.speed[0]);
             } else receiveTypeChangeMessage(); //recu
         }
     }
-
+void startToolChange(TaskType newTaskType){
+    if(owner.agentState!=AgentState.RECONFIGURING) {
+        toolChanger.startChange(newTaskType);
+        previousState = owner.agentState;//saglabā stāvokil, lai varētu atgriezties
+    }
+    }
 }

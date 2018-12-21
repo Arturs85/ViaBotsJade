@@ -48,12 +48,11 @@ public class S4Bhvr extends BaseBhvr {
                 owner.setToCharge();
             }
         }
-//
-        receiveS4message();
+//        receiveS4message();
         statistics.calcAverageDist();
         //   System.out.println("s4 avg: "+statistics.avg[0]+" "+statistics.avg[1]+" "+statistics.avg[2]);
-       calcSpeedsforS3();
-       sendMessageToS3();
+        calcSpeedsforS3();
+        sendMessageToS3();
 
 
         s4count++;
@@ -64,7 +63,7 @@ public class S4Bhvr extends BaseBhvr {
             //   speeds[i] = taskDistribution[i] * Simulation.avgPartArriveTime;
             //temp
 
-            speeds[i] = (taskGenerator.curentPeriodTaskDistribution[i] / 10 );//+ taskDistribution[i] * Simulation.avgPartArriveTime) / 2;
+            speeds[i] = (taskGenerator.curentPeriodTaskDistribution[i] / 10);//+ taskDistribution[i] * Simulation.avgPartArriveTime) / 2;
         }
 
     }

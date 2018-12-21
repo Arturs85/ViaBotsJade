@@ -159,6 +159,7 @@ public class S3Bhvr extends BaseBhvr {
 
             tpl = MessageTemplate.MatchTopic(s3Topic);
             s3s2tpl = MessageTemplate.MatchTopic(s2Topic);
+          s4s3tpl =MessageTemplate.MatchTopic(s4s3Topic);
             topicHelper.register(s3Topic);
             topicHelper.register(s4s3Topic);
 
