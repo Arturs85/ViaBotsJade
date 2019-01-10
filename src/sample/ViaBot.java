@@ -23,6 +23,9 @@ public class ViaBot extends Agent {
     public static int[] defSpeed = {9, 8, 7, 1, 1, 1};//A,B,C
     public static int[] defEnergyCons = {2, 3, 4, 1, 1, 1};
 
+    public static final Integer lock = 1;
+    public static final Integer infoListlock = 1;
+
     public int[] speed = {23, 14, 19, 1, 1, 1};//A,B,C
     public int[] finishedTasksCount = {0, 0, 0};//A,B,C
     public int[] energyCons = {2, 3, 4, 1, 1, 1};
@@ -42,6 +45,7 @@ public class ViaBot extends Agent {
     public AgentState agentState = AgentState.IDLE;
     public Battery battery;
     public int speedFactor = 1;
+    public boolean resetCalled = false;
 
     protected void setup() {
         battery = new Battery();
@@ -168,10 +172,13 @@ public class ViaBot extends Agent {
     }
 
     int indexOfInfoEntry() {
-        for (AgentInfo entry : agentsList) {
-            if (entry.name.contains(getName()))
-                return agentsList.indexOf(entry);
+        synchronized (ViaBot.infoListlock) {
+            for (AgentInfo entry : agentsList) {
+                if (entry.name.contains(getName()))
+                    return agentsList.indexOf(entry);
+            }
         }
+
         return -1;
     }
 
@@ -179,11 +186,28 @@ public class ViaBot extends Agent {
     @Override
     protected void takeDown() {
         super.takeDown();
-        for (int i = 0; i < mBehaviours.size(); i++) {
-            mRemoveBehaviour(mBehaviours.get(i));
 
+
+        synchronized (infoListlock) {
+            agentsList.remove(indexOfInfoEntry());//remove agent info from list prior agent delete
+
+            for (int i = 0; i < mBehaviours.size(); i++) {
+                mRemoveBehaviour(mBehaviours.get(i));
+
+            }
         }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (taskList.contains(currentTask)) {
+                    // taskList.remove(currentTask);
+                    currentTask.abandonTask();
+                    System.out.println("unfinished task abandoned ");
+                }
+            }
+        });
     }
+
 
     public String nameOfLeastValuedS1(TaskType taskType) {
         int index = -1;
@@ -211,9 +235,10 @@ public class ViaBot extends Agent {
 
     public void setToCharge() {
         agentState = AgentState.CHARGING;
-
-        currentTask.abandonTask();
-        currentTask = null;
+        if (currentTask != null) {
+            currentTask.abandonTask();
+            currentTask = null;
+        }
         isWorking = false;// should be removed in favor of agentState
     }
 

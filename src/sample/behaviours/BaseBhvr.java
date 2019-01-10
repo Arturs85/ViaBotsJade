@@ -20,6 +20,7 @@ public abstract class BaseBhvr extends TickerBehaviour {
     ViaBot owner;
     int defPauseMs = 1000;
     int speedFactor = 1;
+    protected boolean resetCalled = false;
 
     public BaseBhvr(ViaBot a, long period) {
         super(a, period);
@@ -38,7 +39,9 @@ public abstract class BaseBhvr extends TickerBehaviour {
 
     @Override
     protected void onTick() {
-        owner.addBehaviour(new ManagingRoleChekerBhvr(owner));
+        synchronized (ViaBot.lock) {
+            owner.addBehaviour(new ManagingRoleChekerBhvr(owner));
+        }
     receiveUImessage();
 //adjust ticker behaviour period
     if(getPeriod()!=defPauseMs/owner.speedFactor) {
@@ -65,10 +68,16 @@ public abstract class BaseBhvr extends TickerBehaviour {
                         reset(defPauseMs / speedFactor);
                         //System.out.println("ticker behaviour period reset to "+getPeriod());
                     }
+                    if(data.resetNow){
+                       owner.resetCalled=true;
+                        //System.out.println("base reset recieved");
+
+                    }
                 } catch (UnreadableException e) {
                     e.printStackTrace();
                 }
                 //    System.out.println("s3 : Agentinfo size: "+owner.agentsList.size());
         }
     }
+
 }

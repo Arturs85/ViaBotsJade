@@ -69,6 +69,8 @@ public class S3Bhvr extends BaseBhvr {
 
     }
 
+
+
     void calcPrefDist() {
         float taskDistrPct[] = new float[taskDistribution.length];
         float totalTasks = Arrays.stream(taskDistribution).sum();
@@ -101,7 +103,11 @@ public class S3Bhvr extends BaseBhvr {
             //temp
 
             speeds[i] = (predictedSpeeds[i] + taskDistribution[i] * Simulation.avgPartArriveTime) / 2;
+
+
         }
+        System.out.println("speedAFor S2: " + speeds[0] + " = " + predictedSpeeds[0] +
+                " + " + taskDistribution[0]+" * "+Simulation.avgPartArriveTime+"/2");
 
     }
 
@@ -219,7 +225,7 @@ public class S3Bhvr extends BaseBhvr {
                 }
                 //   System.out.println("s3 : Agentinfo size: " + owner.agentsList.size());
 
-                System.out.println("s3<--s4: A: " + predictedSpeeds[0] + " B: " + predictedSpeeds[1] + " C: " + predictedSpeeds[2]);
+            //    System.out.println("s3<--s4: A: " + predictedSpeeds[0] + " B: " + predictedSpeeds[1] + " C: " + predictedSpeeds[2]);
 
             } else receiveS4S3message(); //recu
         }

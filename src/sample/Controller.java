@@ -60,21 +60,23 @@ public class Controller {
     Text textField;
     private Simulation simulation;
     GUIAgent guiAgent;
-GraphicsContext gc;
+    GraphicsContext gc;
+    double redInitial = 0.2;
 
-public  void initialize(){
-    sliderSimSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
-     //   System.out.println("Speed slider value changed "+ newValue);
-        simulation.timeline.setRate(newValue.intValue());//setDelay(Duration.millis(simulation.simStepDefDuration/newValue.intValue()));
-        if (guiAgent != null) {
-            guiAgent.simSpeedFactor=newValue.intValue();
-            guiAgent.sendMessageUI(simulation.isRunning);
+    public void initialize() {
+        sliderSimSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
+            //   System.out.println("Speed slider value changed "+ newValue);
+            simulation.timeline.setRate(newValue.intValue());//setDelay(Duration.millis(simulation.simStepDefDuration/newValue.intValue()));
+            if (guiAgent != null) {
+                guiAgent.simSpeedFactor = newValue.intValue();
+                guiAgent.sendMessageUI(simulation.isRunning, false);
 
-        }
+            }
 
 
-    });
-}
+        });
+    }
+
     void setGUIAgent(GUIAgent guiagent) {
         this.guiAgent = guiagent;
 
@@ -112,7 +114,7 @@ public  void initialize(){
         simulation.timeline.play();
         simulation.isRunning = true;
         if (guiAgent != null) {
-            guiAgent.sendMessageUI(true);
+            guiAgent.sendMessageUI(true, false);
 
         }
 
@@ -126,7 +128,7 @@ public  void initialize(){
         simulation.timeline.stop();
         simulation.isRunning = false;
         if (guiAgent != null) {
-            guiAgent.sendMessageUI(false);
+            guiAgent.sendMessageUI(false, false);
 
         }
     }
@@ -140,7 +142,7 @@ public  void initialize(){
         textFinishedTasks.setText(Integer.toString(finishedTasks));
         textBeltStoppedPercentage.setText(String.format("%.2f", simulation.beltStopedFactor) + " %");
         textNoOfRetoolings.setText(String.valueOf(Simulation.getNoOfRetoolings()));
-drawShapes(gc);
+        drawShapes(gc);
     }
 
     // @Override
@@ -173,32 +175,54 @@ drawShapes(gc);
 
         Group root = new Group();
         Canvas canvas = new Canvas(2000, 1000);
-         gc = canvas.getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
         drawShapes(gc);
         root.getChildren().add(canvas);
         stage.setTitle("Plot");
 
         stage.setScene(new Scene(root));
         stage.show();
-
+        gc.strokeText("overload time, s", 10, 30);
+        gc.strokeText("simulation time, s", canvas.getWidth() - 150, canvas.getHeight() - 20);
 
     }
 
 
-     void drawShapes(GraphicsContext gc) {
+    void drawShapes(GraphicsContext gc) {
         gc.setFill(Color.GREEN);
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(2);
-        gc.strokeLine(simulation.simTime,gc.getCanvas().getHeight()-Simulation.getNoOfRetoolings(),
-                simulation.simTime,gc.getCanvas().getHeight()-Simulation.getNoOfRetoolings());
-         gc.setStroke(Color.RED);
+        gc.strokeLine(simulation.simTime, gc.getCanvas().getHeight() - Simulation.getNoOfRetoolings(),
+                simulation.simTime, gc.getCanvas().getHeight() - Simulation.getNoOfRetoolings());
+        gc.setStroke(Color.color(redInitial, redInitial - 0.1, redInitial - 0.1));
 
-         gc.strokeLine(simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedTime,
-                 simulation.simTime,gc.getCanvas().getHeight()-simulation.beltStopedTime);
+        gc.strokeLine(simulation.simTime, gc.getCanvas().getHeight() - simulation.beltStopedTime,
+                simulation.simTime, gc.getCanvas().getHeight() - simulation.beltStopedTime);
 
         // System.out.println(simulation.simTime+" "+simulation.beltStopedTime+" "+Simulation.getNoOfRetoolings());
+        if (simulation.taskGenerator.curTaskDistribution != simulation.taskGenerator.prevTaskDistribution) {
+            gc.setStroke(Color.GRAY);
+            gc.strokeLine(simulation.simTime, 0, simulation.simTime, gc.getCanvas().getHeight());
+            int[] d = simulation.taskGenerator.curTaskDistribution.tasksDistribution;
+            gc.setStroke(Color.BLACK);
+            gc.strokeText(d[0] + " : " + d[1] + " : " + d[2], simulation.simTime + 5, 20);
+        }
 
-     }
+    }
 
+    void colorShift() {
+        redInitial += 0.2;
+        if (redInitial > 1)
+            redInitial = 0.2;
 
+    }
+
+    public void restartSimulationButtonHandler(ActionEvent actionEvent) {
+        simulation.restart();
+        colorShift();
+        if (guiAgent != null) {
+            guiAgent.sendMessageUI(true, true);
+
+        }
+    }
 }

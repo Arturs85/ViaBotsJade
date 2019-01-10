@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.AgentConfigController">
     <children>
@@ -38,23 +37,23 @@
 
                 </rowConstraints>
                 <children>
-                    <TextField fx:id="textSpeedA" GridPane.columnIndex="1" GridPane.rowIndex="2" text="12"/>
-                    <TextField fx:id="textSpeedB" GridPane.columnIndex="2" GridPane.rowIndex="2" text="14"/>
-                    <TextField fx:id="textSpeedC" GridPane.columnIndex="3" GridPane.rowIndex="2" text="22"/>
-                    <TextField fx:id="textSpeedS2" GridPane.columnIndex="4" GridPane.rowIndex="2" text="14"/>
-                    <TextField fx:id="textSpeedS3" GridPane.columnIndex="5" GridPane.rowIndex="2" text="52"/>
-                    <TextField fx:id="textSpeedS4" GridPane.columnIndex="6" GridPane.rowIndex="2" text="72"/>
+                    <TextField fx:id="textSpeedA" text="12" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <TextField fx:id="textSpeedB" text="14" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                    <TextField fx:id="textSpeedC" text="22" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                    <TextField fx:id="textSpeedS2" text="14" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                    <TextField fx:id="textSpeedS3" text="52" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                    <TextField fx:id="textSpeedS4" text="72" GridPane.columnIndex="6" GridPane.rowIndex="2" />
 
                     <Label text="Part" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <GridPane.margin>
                             <Insets />
                         </GridPane.margin></Label>
-                    <TextField fx:id="textPwrA" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                    <TextField fx:id="textPwrB" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                    <TextField fx:id="textPwrC" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
-                    <TextField fx:id="textPwrS2" GridPane.columnIndex="4" GridPane.rowIndex="3"/>
-                    <TextField fx:id="textPwrS3" GridPane.columnIndex="5" GridPane.rowIndex="3"/>
-                    <TextField fx:id="textPwrS4" GridPane.columnIndex="6" GridPane.rowIndex="3"/>
+                    <TextField fx:id="textPwrA" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <TextField fx:id="textPwrB" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                    <TextField fx:id="textPwrC" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                    <TextField fx:id="textPwrS2" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                    <TextField fx:id="textPwrS3" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                    <TextField fx:id="textPwrS4" GridPane.columnIndex="6" GridPane.rowIndex="3" />
 
                     <Label prefHeight="17.0" text="Finished" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                     <Label text="Speed" GridPane.columnIndex="0" GridPane.rowIndex="2" />
@@ -79,16 +78,29 @@
             </GridPane>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <Button fx:id="cancelCreateAgentButton" mnemonicParsing="false" onAction="#cancelCreateAgentButtonHandler" text="Cancel">
+                  <Button fx:id="cancelCreateAgentButton" mnemonicParsing="false" onAction="#cancelCreateAgentButtonHandler" prefHeight="26.0" prefWidth="92.0" text="Cancel">
                      <VBox.margin>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="createAgentButton" mnemonicParsing="false" onAction="#createAgentButtonHandler" text="Create">
+                  <Button fx:id="createAgentButton" mnemonicParsing="false" onAction="#createAgentButtonHandler" prefHeight="26.0" prefWidth="93.0" text="Create">
                      <VBox.margin>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </VBox.margin>
                   </Button>
+                   <Button fx:id="createAgentsButton" mnemonicParsing="false" onAction="#createAgentsButtonHandler" text="CreateMulti">
+                       <VBox.margin>
+                           <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                       </VBox.margin>
+                   </Button>
+                   <TextField fx:id="textNrToCreate">
+                       <VBox.margin>
+                           <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                       </VBox.margin>
+                   </TextField>
+
+
+
                </children>
             </VBox>
 

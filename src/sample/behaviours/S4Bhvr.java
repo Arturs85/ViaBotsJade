@@ -53,7 +53,7 @@ public class S4Bhvr extends BaseBhvr {
         //   System.out.println("s4 avg: "+statistics.avg[0]+" "+statistics.avg[1]+" "+statistics.avg[2]);
         calcSpeedsforS3();
         sendMessageToS3();
-
+chekReset();
 
         s4count++;
     }
@@ -128,6 +128,14 @@ public class S4Bhvr extends BaseBhvr {
 
         myAgent.send(msg);
 
+    }
+    void chekReset(){
+       // System.out.println("chek reset- called: "+resetCalled+" "+super.resetCalled);
+        if(owner.resetCalled){
+            taskGenerator.reset();
+             System.out.println("s4 task generator resetting");
+owner.resetCalled=false;
+        }
     }
 
 }

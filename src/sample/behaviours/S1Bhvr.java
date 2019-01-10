@@ -122,6 +122,8 @@ AgentState previousState;
 
     }
 
+
+
     void updateInfo() {
         for (Iterator<AgentInfo> iterator = owner.agentsList.iterator(); iterator.hasNext(); ) {
             AgentInfo info = iterator.next();

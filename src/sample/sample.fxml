@@ -28,11 +28,15 @@
                      <font>
                         <Font size="12.0" />
                      </font></Button>
+                  <Button id="newAgentButtonCss" fx:id="restartSimulationButton" mnemonicParsing="false" onAction="#restartSimulationButtonHandler" text="Restart">
+                      <font>
+                          <Font size="12.0" />
+                      </font></Button>
                   <Button id="newAgentButtonCss" fx:id="stopSimulationButton" mnemonicParsing="false" onAction="#StopSimulationbuttonHandler" text="Stop">
                      <font>
                         <Font size="12.0" />
                      </font></Button>
-                  <Slider fx:id="sliderSimSpeed" majorTickUnit="1.0" max="10.0" min="1.0" snapToTicks="true" />
+                  <Slider fx:id="sliderSimSpeed" majorTickUnit="1.0" max="20.0" min="1.0" snapToTicks="true" />
 
               </buttons>
             </ButtonBar>

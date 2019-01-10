@@ -97,11 +97,13 @@ public abstract class S2Bhvr extends BaseBhvr {
 
     double[] calculateAvailableSpeeds(double[] availableSpeeds) {
         Arrays.fill(availableSpeeds, 0);
-        for (AgentInfo ai : owner.agentsList) {
-            for (Behaviour be :
-                    ai.behaviours) {
-                if (be.getBehaviourName().contains("S1"))
-                    availableSpeeds[((ViaBot) be.getAgent()).assignedTaskType.ordinal()] += ai.getSpeed(((ViaBot) be.getAgent()).assignedTaskType);
+        synchronized (ViaBot.infoListlock) {
+            for (AgentInfo ai : owner.agentsList) {
+                for (Behaviour be :
+                        ai.behaviours) {
+                    if (be.getBehaviourName().contains("S1"))
+                        availableSpeeds[((ViaBot) be.getAgent()).assignedTaskType.ordinal()] += ai.getSpeed(((ViaBot) be.getAgent()).assignedTaskType);
+                }
             }
         }
         //   System.out.println("as: "+availableSpeeds[0]+" "+availableSpeeds[1]+" "+availableSpeeds[2]);

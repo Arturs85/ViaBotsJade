@@ -23,7 +23,10 @@ public class AgentConfigController {
     public TextField textPwrS2;
     public TextField textPwrS3;
     public TextField textPwrS4;
+    public Button createAgentsButton;
+    public TextField textNrToCreate;
     int speed[];
+    private static final int  maxAgentsinBatch = 30;
     Simulation simulation;
     @FXML
     public ChoiceBox agentBehaviourChoiseBox;
@@ -44,6 +47,7 @@ public class AgentConfigController {
         textPwrS2.setText(Integer.toString(ViaBot.defEnergyCons[3]));
         textPwrS3.setText(Integer.toString(ViaBot.defEnergyCons[4]));
         textPwrS4.setText(Integer.toString(ViaBot.defEnergyCons[5]));
+textNrToCreate.setText("21");
 
     }
 
@@ -60,21 +64,39 @@ public class AgentConfigController {
     }
 
     public void createAgentButtonHandler(ActionEvent actionEvent) {
-        speed=new int[]{Integer.parseInt(textSpeedA.getText()),
-                Integer.parseInt(textSpeedB.getText()),
-                Integer.parseInt(textSpeedC.getText()),
-                Integer.parseInt(textSpeedS2.getText()),
-                Integer.parseInt(textSpeedS3.getText()),
-                Integer.parseInt(textSpeedS4.getText())};
-
-        int [] powerCons = new int[]{Integer.parseInt(textPwrA.getText()),
-                Integer.parseInt(textPwrB.getText()),
-                Integer.parseInt(textPwrC.getText()),
-                Integer.parseInt(textPwrS2.getText()),
-                Integer.parseInt(textPwrS3.getText()),
-                Integer.parseInt(textPwrS4.getText())};
-
-
-                simulation.createAgent((String) (agentBehaviourChoiseBox.getValue()),speed,powerCons);
+      createAgents(1);
     }
+
+    public void createAgentsButtonHandler(ActionEvent actionEvent) {
+
+        int count = Integer.parseInt(textNrToCreate.getText());
+createAgents(count);
+
+}
+
+private void createAgents(int noOfAgents){
+    if(noOfAgents>maxAgentsinBatch)//limit nr of agents to create in one turn
+noOfAgents=maxAgentsinBatch;
+
+        speed=new int[]{Integer.parseInt(textSpeedA.getText()),
+            Integer.parseInt(textSpeedB.getText()),
+            Integer.parseInt(textSpeedC.getText()),
+            Integer.parseInt(textSpeedS2.getText()),
+            Integer.parseInt(textSpeedS3.getText()),
+            Integer.parseInt(textSpeedS4.getText())};
+
+    int [] powerCons = new int[]{Integer.parseInt(textPwrA.getText()),
+            Integer.parseInt(textPwrB.getText()),
+            Integer.parseInt(textPwrC.getText()),
+            Integer.parseInt(textPwrS2.getText()),
+            Integer.parseInt(textPwrS3.getText()),
+            Integer.parseInt(textPwrS4.getText())};
+
+    for (int i = 0; i < noOfAgents; i++) {
+        simulation.createAgent((String) (agentBehaviourChoiseBox.getValue()),speed,powerCons);
+
+    }
+
+
+}
 }

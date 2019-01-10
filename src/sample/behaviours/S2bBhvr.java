@@ -19,4 +19,5 @@ int order=1;
         owner.simulation.controller.textS1bSpeed.setText(Double.toString(availableSpeed));
     }
 
+
 }

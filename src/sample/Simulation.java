@@ -28,6 +28,7 @@ public class Simulation {
             new Task(0), new Task(0));
     volatile ObservableList<AgentInfo> agents = FXCollections.observableArrayList();
     LinkedList<Task> queue = new LinkedList();
+public static final Integer tasksLock=1;
 
     ObservableList<Task> finishedTasks = FXCollections.observableList(queue);
     static ObservableList<String> roleList = FXCollections.observableArrayList("S1", "S2", "S3", "S4");
@@ -90,11 +91,12 @@ public class Simulation {
     }
 
 
-    void simulationStep() {
+    synchronized void simulationStep() {
         simTime++;
         controller.update(simTime, ViaBot.totalFinishedTasks);
+        Task task = taskGenerator.simulationStep(simTime);
+
         if (tasks.size() < TASKS_LENGTH) {
-            Task task = taskGenerator.simulationStep(simTime);
             Arrays.fill(incomingPartDist, 0);
             if (task != null) {
                 tasks.add(task);
@@ -150,7 +152,7 @@ public class Simulation {
 
             }
         }
-        controller.guiAgent.sendMessageUI(isRunning);
+        controller.guiAgent.sendMessageUI(isRunning,false);
     }
 
     void createGUIAgent() {
@@ -284,6 +286,14 @@ public class Simulation {
         }
     }
 
+    void restart(){
+        simTime=0;
+        noOfRetoolings=0;
+        beltStopedTime=0;
+        beltStopedFactor=0;
+        taskGenerator.reset();
+
+    }
     PlatformController.Listener pcl = new PlatformController.Listener() {
         @Override
         public void bornAgent(jade.wrapper.PlatformEvent platformEvent) {

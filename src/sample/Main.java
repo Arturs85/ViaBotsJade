@@ -21,7 +21,7 @@ public class Main extends Application {
         primaryStage.setTitle("ViaBots Simulation");
         primaryStage.setScene(new Scene(root, 1200, 675));
         Controller controller = loader.getController();
-        Simulation simulation = new Simulation(controller);
+        final Simulation simulation = new Simulation(controller);
         controller.setSimulation(simulation);
         primaryStage.show();
 
