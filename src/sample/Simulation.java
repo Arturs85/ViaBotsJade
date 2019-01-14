@@ -32,6 +32,7 @@ public static final Integer tasksLock=1;
 
     ObservableList<Task> finishedTasks = FXCollections.observableList(queue);
     static ObservableList<String> roleList = FXCollections.observableArrayList("S1", "S2", "S3", "S4");
+    static ObservableList<Integer> tasksLengthsList = FXCollections.observableArrayList(5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
     static int agentNumber = 0;
     static int noOfRetoolings = 0;
     int simStepDefDuration = 1000;
@@ -39,7 +40,7 @@ public static final Integer tasksLock=1;
     Timeline timeline;
     int simTime = 0;
     TaskGenerator taskGenerator;
-    final int TASKS_LENGTH = 8;
+    static int tasksLength = 8;
     final int FINISHED_TASKS_SIZE = 20;
     int beltStopedTime = 0;
     double beltStopedFactor = 0;
@@ -96,7 +97,7 @@ public static final Integer tasksLock=1;
         controller.update(simTime, ViaBot.totalFinishedTasks);
         Task task = taskGenerator.simulationStep(simTime);
 
-        if (tasks.size() < TASKS_LENGTH) {
+        if (tasks.size() < tasksLength) {
             Arrays.fill(incomingPartDist, 0);
             if (task != null) {
                 tasks.add(task);
@@ -190,14 +191,14 @@ public static final Integer tasksLock=1;
         }
     }
 
-    public synchronized void moveToFinishedList(ViaBot viaBot) {
-        int finishedTaskIndex = tasks.indexOf(viaBot.currentTask);
+    public synchronized void moveToFinishedList(ViaBot viaBot,Task taskToRemove) {
+        int finishedTaskIndex = tasks.indexOf(taskToRemove);
         if (finishedTaskIndex >= 0) {
-            viaBot.currentTask.timeFinished = simTime;
+            taskToRemove.timeFinished = simTime;
 
             finishedTasks.add(tasks.get(finishedTaskIndex));
             tasks.remove(finishedTaskIndex);
-            viaBot.currentTask = null;
+            //viaBot.currentTask = null;
 
         } else
             System.out.println("finished task " + viaBot.currentTask.id + " not found in task list ");

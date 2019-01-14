@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Slider?>
@@ -14,6 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.Tooltip?>
 <VBox prefHeight="432.0" prefWidth="1100" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <HBox>
@@ -36,6 +38,10 @@
                      <font>
                         <Font size="12.0" />
                      </font></Button>
+                  <ChoiceBox fx:id="choiceBoxTasksLenght" onAction="#tasksLengthValueChanged" accessibleText="TLength" prefWidth="150.0" >
+                      <tooltip><Tooltip text="Belt length"/></tooltip>
+                  </ChoiceBox>
+
                   <Slider fx:id="sliderSimSpeed" majorTickUnit="1.0" max="20.0" min="1.0" snapToTicks="true" />
 
               </buttons>
@@ -50,19 +56,19 @@
       </HBox>
       <HBox prefHeight="528.0" prefWidth="1200">
          <children>
-             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" >
+             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL">
                  <items>
                      <Label prefHeight="25.0" text="New Parts" textAlignment="CENTER" />
                      <ListView fx:id="newTasksListView" prefHeight="295.0" prefWidth="300.0" />
                  </items>
              </SplitPane>
-            <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" >
+            <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL">
               <items>
                   <Label prefHeight="25.0" text="Agents" textAlignment="CENTER" />
                    <ListView fx:id="workingAgentsListView" prefHeight="311.0" prefWidth="650.0" />
               </items>
             </SplitPane>
-             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL" >
+             <SplitPane dividerPositions="0.1196319018404908" orientation="VERTICAL">
                  <items>
                      <Label prefHeight="25.0" text="Finished Parts" textAlignment="CENTER" />
                      <ListView fx:id="finishedTasksListView" prefHeight="295.0" prefWidth="300.0" />

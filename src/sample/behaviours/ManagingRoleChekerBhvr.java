@@ -23,11 +23,13 @@ public class ManagingRoleChekerBhvr extends OneShotBehaviour {
 
     //pievieno pirmo brīvo vadības lomu, paredzēta izsaukt no ManagingRoleCheckerBehaviour klases
     public synchronized void checkManagingRoles() {
+        synchronized (ViaBot.lock){
         for (int i = 0; i < Simulation.managingRolesFilled.length; i++) {
             if (!Simulation.managingRolesFilled[i]) {
                 owner.mAddBehaviour(Simulation.managingRoles[i]);
                 break;
             }
+        }
         }
     }
 }

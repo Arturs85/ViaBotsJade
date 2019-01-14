@@ -104,11 +104,12 @@ AgentState previousState;
                         owner.finishedTasksCount[owner.currentTask.taskType.ordinal()]++;
 
                         owner.totalFinishedTasks++;
+Task taskToRemove = owner.currentTask;
 
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                owner.simulation.moveToFinishedList(owner);
+                                owner.simulation.moveToFinishedList(owner,taskToRemove);
                             }
                         });
 

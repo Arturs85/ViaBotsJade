@@ -196,12 +196,13 @@ public class ViaBot extends Agent {
 
             }
         }
+        Task taskToRemove = currentTask;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if (taskList.contains(currentTask)) {
+                if (taskList.contains(taskToRemove)) {
                     // taskList.remove(currentTask);
-                    currentTask.abandonTask();
+                    taskToRemove.abandonTask();
                     System.out.println("unfinished task abandoned ");
                 }
             }

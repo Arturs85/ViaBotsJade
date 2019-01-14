@@ -60,7 +60,7 @@ public class Task {
     @Override
     public String toString() {
         //    return super.toString();
-        return "Part " + id + "  Type: " + taskType + " c: " + timeCreated+ " s: " + timeStarted+ " f: " + timeFinished + " P: " + progress;
+        return "Part " + id + "  Type: " + taskType + " c: "+ + timeCreated+ " s: " + timeStarted+ " f: " + timeFinished + " P: " + progress;
     }
 
 void abandonTask(){

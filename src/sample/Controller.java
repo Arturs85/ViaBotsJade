@@ -32,6 +32,7 @@ public class Controller {
     public Label textS1cSpeed;
     public Label textNoOfRetoolings;
     public Slider sliderSimSpeed;
+    public ChoiceBox choiceBoxTasksLenght;
     @FXML
     Label textBeltStoppedPercentage;
     @FXML
@@ -75,6 +76,7 @@ public class Controller {
 
 
         });
+
     }
 
     void setGUIAgent(GUIAgent guiagent) {
@@ -84,7 +86,8 @@ public class Controller {
 
     void setSimulation(Simulation simulation) {
         this.simulation = simulation;
-
+choiceBoxTasksLenght.setItems(Simulation.tasksLengthsList);
+choiceBoxTasksLenght.setValue(Simulation.tasksLengthsList.get(3));
         workingAgentsListView.setCellFactory(new Callback<ListView<AgentInfo>, ListCell<AgentInfo>>() {
             @Override
             public ListCell<AgentInfo> call(ListView<AgentInfo> param) {
@@ -224,5 +227,11 @@ public class Controller {
             guiAgent.sendMessageUI(true, true);
 
         }
+    }
+
+    public void tasksLengthValueChanged(ActionEvent actionEvent) {
+        System.out.println("tasksLenght: "+choiceBoxTasksLenght.getValue());
+
+        Simulation.tasksLength=(int)choiceBoxTasksLenght.getValue();
     }
 }
